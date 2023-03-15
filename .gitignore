@@ -9,3 +9,5 @@
 /TestFileGenerator/bin
 /TestFileGenerator/obj
 *.user
+/MultiSorterLib/obj
+/MultiSorterLib/bin
