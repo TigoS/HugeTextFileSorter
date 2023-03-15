@@ -12,13 +12,12 @@ namespace MultiSorterLib
 
         private static readonly Random random = new();
         
-        // TODO: Find out the optimal combination of arguments to have each line by default 1-2 KB
         public static long GenerateTestFile(
             string fileName,
             long fileSize,
             int maxNumber = int.MaxValue,
-            int maxWordsCount = 100,
-            int maxWordLength = 12,
+            int maxWordsCount = 150,
+            int maxWordLength = 20,
             short duplicateStringDensity = 0)
         {
             // Creating an empty file to be able to track it's size change via 'FileInfo'
@@ -80,6 +79,8 @@ namespace MultiSorterLib
 
             for (int i = 0; i < linesCountToFulfillExpectedSize; i++)
             {
+                generatedLinesCount++;
+
                 if (duplicateStringDensity >= Hundred)
                 {
                     // All strings should be the same and only number parts may differ
@@ -98,6 +99,29 @@ namespace MultiSorterLib
             File.AppendAllText(fileName, sb.ToString());
 
             return generatedLinesCount;
+        }
+
+        public static int GetEstimatedLineSizeInBytes(int maxNumber, int maxWordsCount, int maxWordLength, EstimatedSizeType estimatedSizeType)
+        {
+            // In the case of a randomly generated 1-digit number, a one-letter single word,
+            // the line size would be exactly 4 bytes for UTF-8 - e.g., '3. A'
+            const int MinLineSizeInBytes = 4;
+
+            // The greatest possible line size would be:
+            // Number part digits number + Max Words Count * Max Word Length + Max Words Count (for leading spaces)
+            int maxLineSizeInBytes = maxNumber.ToString().Length + ((maxWordsCount + 1) * maxWordLength) + 1;
+
+            switch (estimatedSizeType)
+            {
+                case EstimatedSizeType.Min:
+                    return MinLineSizeInBytes;
+
+                case EstimatedSizeType.Avg:
+                    return (MinLineSizeInBytes + maxLineSizeInBytes) / 2;
+
+                default:
+                    return maxLineSizeInBytes;
+            }
         }
 
         private static bool ShouldBeDuplicate(short duplicateStringDensity)
@@ -142,29 +166,6 @@ namespace MultiSorterLib
             }
 
             return $"{retVal[0].ToString().ToUpper()}{retVal[One..]}".TrimEnd();
-        }
-
-        private static int GetEstimatedLineSizeInBytes(int maxNumber, int maxWordsCount, int maxWordLength, EstimatedSizeType estimatedSizeType)
-        {
-            // In the case of a randomly generated 1-digit number, a one-letter single word,
-            // the line size would be exactly 4 bytes for UTF-8 - e.g., '3. A'
-            const int MinLineSizeInBytes = 4;
-
-            // The greatest possible line size would be:
-            // Number part digits number + Max Words Count * Max Word Length + Max Words Count (for leading spaces)
-            int maxLineSizeInBytes = maxNumber.ToString().Length + ((maxWordsCount + 1) * maxWordLength);
-
-            switch (estimatedSizeType)
-            {
-                case EstimatedSizeType.Min:
-                    return MinLineSizeInBytes;
-
-                case EstimatedSizeType.Avg:
-                    return (MinLineSizeInBytes + maxLineSizeInBytes) / 2;
-
-                default:
-                    return maxLineSizeInBytes;
-            }
         }
     }
 }

@@ -27,22 +27,23 @@
         public static string FormatFileSize(
             this double fileSize,
             bool showBytes = false,
-            MetricPrefixes benchmark = MetricPrefixes.None)
+            MetricPrefixes metricBenchmark = MetricPrefixes.None)
         {
-            string suffix = showBytes ? $" ({fileSize.GetFileSizeInBytes(benchmark):##,###} B)" : string.Empty;
+            string suffix = showBytes ? $" ({fileSize.GetFileSizeInBytes(metricBenchmark):##,###} B)" : string.Empty;
             
             while (fileSize * 2 > BinaryMultiplier)
             {
-                benchmark++;
+                metricBenchmark++;
                 fileSize /= BinaryMultiplier;
             }
 
-            return $"{fileSize:##,##0.##} {benchmark.ToString()[0]}B{(benchmark > MetricPrefixes.None ? suffix : string.Empty)}";
+            return $"{fileSize:##,##0.##} {(metricBenchmark != MetricPrefixes.None ? metricBenchmark.ToString()[0] : string.Empty)}B" +
+                   $"{(metricBenchmark > MetricPrefixes.None ? suffix : string.Empty)}";
         }
 
-        public static long GetFileSizeInBytes(this double fileSize, MetricPrefixes benchmark = MetricPrefixes.None)
+        public static long GetFileSizeInBytes(this double fileSize, MetricPrefixes metricBenchmark = MetricPrefixes.None)
         {
-            return (long)(fileSize * Math.Pow(BinaryMultiplier, (int)benchmark - 1));
+            return (long)(fileSize * Math.Pow(BinaryMultiplier, (int)metricBenchmark - 1));
         }
     }
 }
