@@ -16,7 +16,7 @@ namespace TestFileGenerator
 
         private void btnGenerateAndSave_Click(object sender, EventArgs e)
         {
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 gbGenerate.Enabled = false;
 
@@ -33,18 +33,18 @@ namespace TestFileGenerator
 
                 var cts = new CancellationTokenSource();
 
-                var fileStream = File.Create(saveFileDialog1.FileName);
-                fileStream.Close();
-                fileStream.Dispose();
-
                 sw.Reset();
                 sw.Start();
 
                 Task.Run(() =>
-                            RandomFileGenerator.GenerateTestFile(saveFileDialog1.FileName, fileSize, maxNumber,
-                                maxWordsCount, maxWordLength),
+                            RandomFileGenerator.GenerateTestFile(
+                                saveFileDialog.FileName,
+                                fileSize,
+                                maxNumber,
+                                maxWordsCount,
+                                maxWordLength),
                         cts.Token)
-                    .ContinueWith(generatedLinesCount =>
+                    .ContinueWith(generatedLinesCountTask =>
                     {
                         Invoke(() =>
                         {
@@ -54,12 +54,18 @@ namespace TestFileGenerator
 
                             tsslExecutionTime.Text = sw.Elapsed.ToString("c");
 
-                            if (generatedLinesCount is {IsCanceled: false, IsFaulted: false})
+                            if (generatedLinesCountTask is { IsCanceled: false, IsFaulted: false })
                             {
-                                tsslLinesCount.Text = generatedLinesCount.Result.ToString("##,###");
+                                var generatedLinesCount = generatedLinesCountTask.Result;
+                                tsslLinesCount.Text = generatedLinesCount.ToString("##,###");
+
+                                if (generatedLinesCount < 1)
+                                {
+                                    Log($"Failed to generate a new file: '{saveFileDialog.FileName}'");
+                                }
                             }
 
-                            FileInfo fileInfo = new FileInfo(saveFileDialog1.FileName);
+                            FileInfo fileInfo = new FileInfo(saveFileDialog.FileName);
                             tsslFileSize.Text = ((double)fileInfo.Length).FormatFileSize();
 
                             gbGenerate.Enabled = true;
@@ -82,7 +88,7 @@ namespace TestFileGenerator
 
                 if (ex is not null)
                 {
-                    txtLog.AppendText($"\tInternal error: {ex.Message}{Environment.NewLine}");
+                    txtLog.AppendText($"\tUnderlying error: {ex.Message}{Environment.NewLine}");
                 }
             }
             catch

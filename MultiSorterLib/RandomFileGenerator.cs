@@ -19,6 +19,16 @@ namespace MultiSorterLib
             int maxWordsCount = 100,
             int maxWordLength = 12)
         {
+            // Creating an empty file to be able to track it's size change via 'FileInfo'
+            var fileStream = File.Create(fileName);
+            fileStream.Close();
+            fileStream.Dispose();
+
+            if (!File.Exists(fileName))
+            {
+                return -1;
+            }
+
             long generatedLinesCount = 0;
             StringBuilder sb = new StringBuilder();
             FileInfo fileInfo = new FileInfo(fileName);

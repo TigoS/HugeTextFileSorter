@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            statusStrip1 = new StatusStrip();
+            statusStrip = new StatusStrip();
             toolStripStatusLabel1 = new ToolStripStatusLabel();
             tsslLinesCount = new ToolStripStatusLabel();
             toolStripStatusLabel2 = new ToolStripStatusLabel();
@@ -41,18 +41,18 @@
             gbParameters = new GroupBox();
             tableLayoutPanel1 = new TableLayoutPanel();
             lblFileSize = new Label();
+            label4 = new Label();
             label3 = new Label();
-            label2 = new Label();
             nudMaxWordLength = new NumericUpDown();
             nudMaxWordsCount = new NumericUpDown();
-            label6 = new Label();
+            label1 = new Label();
             nudMaxNumber = new NumericUpDown();
-            label4 = new Label();
+            label2 = new Label();
             nudFileSize = new NumericUpDown();
             btnGenerate = new Button();
             txtLog = new TextBox();
-            saveFileDialog1 = new SaveFileDialog();
-            statusStrip1.SuspendLayout();
+            saveFileDialog = new SaveFileDialog();
+            statusStrip.SuspendLayout();
             gbGenerate.SuspendLayout();
             gbParameters.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
@@ -62,14 +62,14 @@
             ((System.ComponentModel.ISupportInitialize)nudFileSize).BeginInit();
             SuspendLayout();
             // 
-            // statusStrip1
+            // statusStrip
             // 
-            statusStrip1.ImageScalingSize = new Size(20, 20);
-            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, tsslLinesCount, toolStripStatusLabel2, toolStripStatusLabel3, tsslFileSize, toolStripStatusLabel4, toolStripStatusLabel5, tsslExecutionTime });
-            statusStrip1.Location = new Point(0, 407);
-            statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new Size(822, 26);
-            statusStrip1.TabIndex = 1;
+            statusStrip.ImageScalingSize = new Size(20, 20);
+            statusStrip.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, tsslLinesCount, toolStripStatusLabel2, toolStripStatusLabel3, tsslFileSize, toolStripStatusLabel4, toolStripStatusLabel5, tsslExecutionTime });
+            statusStrip.Location = new Point(0, 407);
+            statusStrip.Name = "statusStrip";
+            statusStrip.Size = new Size(822, 26);
+            statusStrip.TabIndex = 1;
             // 
             // toolStripStatusLabel1
             // 
@@ -155,13 +155,13 @@
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.Controls.Add(lblFileSize, 2, 0);
-            tableLayoutPanel1.Controls.Add(label3, 0, 5);
-            tableLayoutPanel1.Controls.Add(label2, 0, 4);
+            tableLayoutPanel1.Controls.Add(label4, 0, 5);
+            tableLayoutPanel1.Controls.Add(label3, 0, 4);
             tableLayoutPanel1.Controls.Add(nudMaxWordLength, 1, 5);
             tableLayoutPanel1.Controls.Add(nudMaxWordsCount, 1, 4);
-            tableLayoutPanel1.Controls.Add(label6, 0, 0);
+            tableLayoutPanel1.Controls.Add(label1, 0, 0);
             tableLayoutPanel1.Controls.Add(nudMaxNumber, 1, 3);
-            tableLayoutPanel1.Controls.Add(label4, 0, 3);
+            tableLayoutPanel1.Controls.Add(label2, 0, 3);
             tableLayoutPanel1.Controls.Add(nudFileSize, 1, 0);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(3, 23);
@@ -188,27 +188,27 @@
             lblFileSize.Text = "100 MB";
             lblFileSize.TextAlign = ContentAlignment.MiddleLeft;
             // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Dock = DockStyle.Right;
+            label4.Location = new Point(48, 150);
+            label4.Name = "label4";
+            label4.Size = new Size(129, 34);
+            label4.TabIndex = 9;
+            label4.Text = "Max Word Length:";
+            label4.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // label3
             // 
             label3.AutoSize = true;
             label3.Dock = DockStyle.Right;
-            label3.Location = new Point(48, 150);
+            label3.Location = new Point(48, 117);
             label3.Name = "label3";
-            label3.Size = new Size(129, 34);
-            label3.TabIndex = 9;
-            label3.Text = "Max Word Length:";
+            label3.Size = new Size(129, 33);
+            label3.TabIndex = 3;
+            label3.Text = "Max Words Count:";
             label3.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Dock = DockStyle.Right;
-            label2.Location = new Point(48, 117);
-            label2.Name = "label2";
-            label2.Size = new Size(129, 33);
-            label2.TabIndex = 3;
-            label2.Text = "Max Words Count:";
-            label2.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // nudMaxWordLength
             // 
@@ -230,17 +230,17 @@
             nudMaxWordsCount.TabIndex = 4;
             nudMaxWordsCount.Value = new decimal(new int[] { 100, 0, 0, 0 });
             // 
-            // label6
+            // label1
             // 
-            label6.AutoSize = true;
-            label6.Dock = DockStyle.Right;
-            label6.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label6.Location = new Point(69, 0);
-            label6.Name = "label6";
-            label6.Size = new Size(108, 33);
-            label6.TabIndex = 12;
-            label6.Text = "File Size (MB):";
-            label6.TextAlign = ContentAlignment.MiddleCenter;
+            label1.AutoSize = true;
+            label1.Dock = DockStyle.Right;
+            label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label1.Location = new Point(69, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(108, 33);
+            label1.TabIndex = 12;
+            label1.Text = "File Size (MB):";
+            label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // nudMaxNumber
             // 
@@ -252,16 +252,16 @@
             nudMaxNumber.TabIndex = 3;
             nudMaxNumber.Value = new decimal(new int[] { 1000000000, 0, 0, 0 });
             // 
-            // label4
+            // label2
             // 
-            label4.AutoSize = true;
-            label4.Dock = DockStyle.Right;
-            label4.Location = new Point(32, 84);
-            label4.Name = "label4";
-            label4.Size = new Size(145, 33);
-            label4.TabIndex = 11;
-            label4.Text = "Max Positive Integer:";
-            label4.TextAlign = ContentAlignment.MiddleCenter;
+            label2.AutoSize = true;
+            label2.Dock = DockStyle.Right;
+            label2.Location = new Point(32, 84);
+            label2.Name = "label2";
+            label2.Size = new Size(145, 33);
+            label2.TabIndex = 11;
+            label2.Text = "Max Positive Integer:";
+            label2.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // nudFileSize
             // 
@@ -297,10 +297,10 @@
             txtLog.Size = new Size(822, 162);
             txtLog.TabIndex = 0;
             // 
-            // saveFileDialog1
+            // saveFileDialog
             // 
-            saveFileDialog1.DefaultExt = "*.txt";
-            saveFileDialog1.Filter = "Text files|*.txt|All files|*.*";
+            saveFileDialog.DefaultExt = "*.txt";
+            saveFileDialog.Filter = "Text files|*.txt|All files|*.*";
             // 
             // frmMain
             // 
@@ -308,13 +308,13 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(822, 433);
             Controls.Add(gbGenerate);
-            Controls.Add(statusStrip1);
+            Controls.Add(statusStrip);
             Controls.Add(txtLog);
             MinimumSize = new Size(840, 480);
             Name = "frmMain";
             Text = "Test File Generator";
-            statusStrip1.ResumeLayout(false);
-            statusStrip1.PerformLayout();
+            statusStrip.ResumeLayout(false);
+            statusStrip.PerformLayout();
             gbGenerate.ResumeLayout(false);
             gbParameters.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
@@ -329,7 +329,7 @@
 
         #endregion
 
-        private StatusStrip statusStrip1;
+        private StatusStrip statusStrip;
         private ToolStripStatusLabel toolStripStatusLabel1;
         private ToolStripStatusLabel tsslLinesCount;
         private ToolStripStatusLabel toolStripStatusLabel2;
@@ -341,16 +341,16 @@
         private GroupBox gbGenerate;
         private Button btnGenerate;
         private TextBox txtLog;
-        private SaveFileDialog saveFileDialog1;
+        private SaveFileDialog saveFileDialog;
         private TableLayoutPanel tableLayoutPanel1;
-        private Label label4;
         private Label label2;
-        private NumericUpDown nudMaxWordsCount;
         private Label label3;
+        private NumericUpDown nudMaxWordsCount;
+        private Label label4;
         private NumericUpDown nudMaxWordLength;
         private NumericUpDown nudMaxNumber;
         private GroupBox gbParameters;
-        private Label label6;
+        private Label label1;
         private NumericUpDown nudFileSize;
         private Label lblFileSize;
     }
