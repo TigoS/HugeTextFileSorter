@@ -27,10 +27,9 @@ do
         
         try
         {
-            using AlphanumericSorterHelper sorterHelper = AlphanumericSorterHelper.LoadFromFile(fileName);
-            sorterHelper.Sort(false);
+            using AlphanumericSorterHelper sorterHelper = new AlphanumericSorterHelper(fileName);
+            sorterHelper.Sort();
             sorterHelper.SaveToFile(outputFileName);
-            sorterHelper.CleanupEntities();
         }
         catch (Exception e)
         {

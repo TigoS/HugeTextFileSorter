@@ -21,13 +21,13 @@ namespace AlphanumericSorterBenchmark
         [Benchmark]
         public void Initialize()
         {
-            sorterHelper = AlphanumericSorterHelper.LoadFromFile(InputFileName);
+            sorterHelper = new AlphanumericSorterHelper(InputFileName);
         }
 
         [Benchmark]
         public void Sort()
         {
-            sorterHelper?.Sort(false);
+            sorterHelper?.Sort();
         }
 
         [Benchmark]
