@@ -27,7 +27,7 @@ namespace AlphanumericSorterBenchmark
         [Benchmark]
         public void Sort()
         {
-            sorterHelper?.Sort();
+            sorterHelper?.Sort(false);
         }
 
         [Benchmark]

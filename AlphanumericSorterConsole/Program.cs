@@ -28,7 +28,7 @@ do
         try
         {
             using AlphanumericSorterHelper sorterHelper = AlphanumericSorterHelper.LoadFromFile(fileName);
-            sorterHelper.Sort();
+            sorterHelper.Sort(false);
             sorterHelper.SaveToFile(outputFileName);
             sorterHelper.CleanupEntities();
         }
