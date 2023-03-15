@@ -1,50 +1,71 @@
 ﻿namespace MultiSorterLib
 {
-    public sealed class AlphanumericSorterHelper
+    public sealed class AlphanumericSorterHelper : IDisposable
     {
-        public AlphanumericSorterHelper()
+        private IEnumerable<AlphanumericEntity>? entities;
+
+        private AlphanumericSorterHelper()
         {
-            Entities = Enumerable.Empty<AlphanumericEntity>();
+            entities = null;
         }
 
-        public AlphanumericSorterHelper(IEnumerable<string> lines)
+        private AlphanumericSorterHelper(IEnumerable<string> lines)
         {
-            Entities = EnumerateEntities(lines);
+            entities = EnumerateEntities(lines);
         }
-
-        public IEnumerable<AlphanumericEntity> Entities;
-
-        public long EntitiesCount => Entities.LongCount();
 
         public static AlphanumericSorterHelper LoadFromFile(string fileName)
         {
             return File.Exists(fileName) ? new AlphanumericSorterHelper(File.ReadLines(fileName)) : new AlphanumericSorterHelper();
         }
-        
-        public void Sort()
+
+        // Adding temporary switcher to compare sorting performances by Array vs HashSet
+        public void Sort(bool isArray)
         {
-            var entityArray = Entities.ToArray();
-            Array.Sort(entityArray);
+            if (isArray)
+            {
+                var entityArray = entities?.ToArray();
+
+                if (entityArray?.Length > 0)
+                {
+                    Array.Sort(entityArray);
+                }
+            }
+            else
+            {
+                var sortedEntities = entities?.ToHashSet().Order();
+
+                entities?.GetEnumerator().Dispose();
+                entities = null;
+
+                entities = sortedEntities;
+            }
         }
 
         public void SaveToFile(string fileName)
         {
-            if (EntitiesCount > 0)
+            if (entities?.LongCount() > 0)
             {
                 var directory = Path.GetDirectoryName(fileName);
+
                 if (!Directory.Exists(directory))
                 {
-                    Directory.CreateDirectory(directory);
+                    Directory.CreateDirectory(directory!);
                 }
 
-                File.WriteAllLines(fileName, Entities.Select(s => s.EntityLine));
+                File.WriteAllLines(fileName, entities.Select(s => s.EntityLine));
             }
         }
 
         public void CleanupEntities()
         {
-            Entities.GetEnumerator().Dispose();
-            Entities = Enumerable.Empty<AlphanumericEntity>();
+            entities?.GetEnumerator().Dispose();
+            entities = null;
+        }
+        
+        public void Dispose()
+        {
+            CleanupEntities();
         }
 
         private static IEnumerable<AlphanumericEntity> EnumerateEntities(IEnumerable<string> lines)
