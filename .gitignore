@@ -3,3 +3,9 @@
 ################################################################################
 
 /.vs
+/AlphanumericSorterBenchmark/bin
+/AlphanumericSorterConsole/bin
+/AlphanumericSorterConsole/obj
+/TestFileGenerator/bin
+/TestFileGenerator/obj
+*.user
