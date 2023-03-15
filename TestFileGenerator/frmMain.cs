@@ -1,9 +1,11 @@
 using System.Diagnostics;
 using System.Text;
+using MultiSorterLib;
 using static TestFileGenerator.FileSizeExtensions;
 
 namespace TestFileGenerator
 {
+    // TODO: On Max Number, Max Words Count & Max Word Length change calculate the estimated single line size in bytes
     public partial class frmMain : Form
     {
         private readonly Stopwatch sw = new();
@@ -15,6 +17,7 @@ namespace TestFileGenerator
             InitializeComponent();
         }
 
+        // TODO: Consider moving to the MultiSorterLib DLL
         private void GenerateTestFile(
             long fileSize,
             int maxNumber = int.MaxValue,
@@ -37,8 +40,9 @@ namespace TestFileGenerator
                     fileInfo = new FileInfo(saveFileDialog1.FileName);
                 }
 
-                sb.AppendLine(string.Format("{0}. {1}",
+                sb.AppendLine(string.Format(AlphanumericEntity.LinePattern,
                     RandomLineGenerator.GetRandomNumber(maxNumber),
+                    AlphanumericEntity.Delimiter,
                     RandomLineGenerator.GetRandomString(maxWordsCount, maxWordLength)));
             }
         }

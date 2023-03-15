@@ -1,5 +1,6 @@
 ﻿namespace TestFileGenerator
 {
+    // TODO: Consider moving to the MultiSorterLib DLL
     public static class FileSizeExtensions
     {
         public enum MetricPrefixes
