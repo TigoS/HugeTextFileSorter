@@ -14,6 +14,13 @@
             Zetta,
             Yotta
         }
+
+        public enum EstimatedSizeType
+        {
+            Min = -1,
+            Avg = 0,
+            Max = 1
+        }
         
         private const double BinaryMultiplier = 1024d;
 
