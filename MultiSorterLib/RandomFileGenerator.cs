@@ -1,9 +1,7 @@
 ﻿using System.Text;
-using MultiSorterLib;
 
-namespace TestFileGenerator
+namespace MultiSorterLib
 {
-    // TODO: Consider moving to the MultiSorterLib DLL
     public static class RandomFileGenerator
     {
         private const int One = 1;

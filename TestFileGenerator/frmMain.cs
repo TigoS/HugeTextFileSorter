@@ -1,5 +1,6 @@
 using System.Diagnostics;
-using static TestFileGenerator.FileSizeExtensions;
+using MultiSorterLib;
+using static MultiSorterLib.FileSizeExtensions;
 
 namespace TestFileGenerator
 {
@@ -59,7 +60,7 @@ namespace TestFileGenerator
                             }
 
                             FileInfo fileInfo = new FileInfo(saveFileDialog1.FileName);
-                            tsslFileSize.Text = ((double) fileInfo.Length).FormatFileSize();
+                            tsslFileSize.Text = ((double)fileInfo.Length).FormatFileSize();
 
                             gbGenerate.Enabled = true;
                         });
