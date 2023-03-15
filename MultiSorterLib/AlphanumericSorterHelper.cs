@@ -2,44 +2,31 @@
 {
     public sealed class AlphanumericSorterHelper : IDisposable
     {
+        private readonly string? inputFileName;
         private IEnumerable<AlphanumericEntity>? entities;
 
-        private AlphanumericSorterHelper()
+        public AlphanumericSorterHelper(string fileName)
         {
+            if (File.Exists(fileName))
+            {
+                inputFileName = fileName;
+
+                entities = EnumerateEntities(File.ReadLines(inputFileName));
+            }
+        }
+        
+        public void Sort()
+        {
+            var sortedEntities = entities?.ToHashSet().Order();
+
+            entities?.GetEnumerator().Dispose();
             entities = null;
-        }
 
-        private AlphanumericSorterHelper(IEnumerable<string> lines)
-        {
-            entities = EnumerateEntities(lines);
-        }
+            entities = sortedEntities;
 
-        public static AlphanumericSorterHelper LoadFromFile(string fileName)
-        {
-            return File.Exists(fileName) ? new AlphanumericSorterHelper(File.ReadLines(fileName)) : new AlphanumericSorterHelper();
-        }
-
-        // Adding temporary switcher to compare sorting performances by Array vs HashSet
-        public void Sort(bool isArray)
-        {
-            if (isArray)
-            {
-                var entityArray = entities?.ToArray();
-
-                if (entityArray?.Length > 0)
-                {
-                    Array.Sort(entityArray);
-                }
-            }
-            else
-            {
-                var sortedEntities = entities?.ToHashSet().Order();
-
-                entities?.GetEnumerator().Dispose();
-                entities = null;
-
-                entities = sortedEntities;
-            }
+            // TODO: Temporary hack to reduce memory consumption
+            sortedEntities = null;
+            sortedEntities?.GetEnumerator().Dispose();
         }
 
         public void SaveToFile(string fileName)
@@ -48,8 +35,14 @@
             {
                 var directory = Path.GetDirectoryName(fileName);
 
+                if (string.IsNullOrWhiteSpace(directory))
+                {
+                    directory = Path.GetDirectoryName(inputFileName);
+                }
+
                 if (!Directory.Exists(directory))
                 {
+                    // Suppressed the possible null reference warning, as the directory is known to be valid here
                     Directory.CreateDirectory(directory!);
                 }
 
