@@ -11,7 +11,9 @@ namespace TestFileGenerator
         private const string Chars = "abcdefghijklmnopqrstuvwxyz";
 
         private static readonly Random random = new();
-        
+
+        // TODO: Optimize to create a file with exactly the required size - not significantly less or greater
+        // TODO: Find out the optimal combination of arguments to have each line by default 1-2 KB
         public static long GenerateTestFile(
             string fileName,
             long fileSize,
@@ -23,6 +25,7 @@ namespace TestFileGenerator
             StringBuilder sb = new StringBuilder();
             FileInfo fileInfo = new FileInfo(fileName);
 
+            // TODO: Optimize to create a file with exactly the required size - not significantly less or greater
             while (fileInfo.Length < fileSize - ushort.MaxValue)
             {
                 generatedLinesCount++;
