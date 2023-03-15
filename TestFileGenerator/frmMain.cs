@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Text;
+using static TestFileGenerator.FileSizeExtensions;
 
 namespace TestFileGenerator
 {
@@ -48,12 +49,18 @@ namespace TestFileGenerator
             {
                 gbGenerate.Enabled = false;
 
-                long fileSize = ((long)nudFileSize.Value);
+                tsslFileSize.Text = string.Empty;
+                tsslLinesCount.Text = string.Empty;
+                tsslExecutionTime.Text = string.Empty;
+
+                long fileSize = ((double)nudFileSize.Value).GetFileSizeInBytes(MetricPrefixes.Mega);
                 int maxNumber = (int)nudMaxNumber.Value;
                 int maxWordsCount = (int)nudMaxWordsCount.Value;
                 int maxWordLength = (int)nudMaxWordLength.Value;
 
-                Log($"Generating test file. File size: {fileSize} Bytes; Max Number: {maxNumber}; Max Words Count: {maxWordsCount}; Max Word Length: {maxWordLength}.");
+                Log($"Generating test file. File size: {((double)fileSize).FormatFileSize()}; Max Number: {maxNumber}; Max Words Count: {maxWordsCount}; Max Word Length: {maxWordLength}.");
+
+                var cts = new CancellationTokenSource();
 
                 var fileStream = File.Create(saveFileDialog1.FileName);
                 fileStream.Close();
@@ -62,14 +69,33 @@ namespace TestFileGenerator
                 sw.Reset();
                 sw.Start();
 
-                GenerateTestFile(fileSize, maxNumber, maxWordsCount, maxWordLength);
+                Task.Run(() =>
+                        GenerateTestFile(fileSize, maxNumber, maxWordsCount, maxWordLength),
+                    cts.Token)
+                    .ContinueWith(_ =>
+                    {
+                        Invoke(() =>
+                        {
+                            sw.Stop();
 
-                sw.Stop();
+                            Log($"File successfully Generated and Saved in: {sw.Elapsed:c}");
 
-                Log($"File successfully Generated and Saved in: {sw.Elapsed:c}");
+                            tsslExecutionTime.Text = sw.Elapsed.ToString("c");
+                            tsslLinesCount.Text = generatedLinesCount.ToString("##,###");
 
-                gbGenerate.Enabled = true;
+                            FileInfo fileInfo = new FileInfo(saveFileDialog1.FileName);
+                            tsslFileSize.Text = ((double)fileInfo.Length).FormatFileSize();
+
+                            gbGenerate.Enabled = true;
+                        });
+                    })
+                    .ContinueWith(_ => Invoke(() => cts.Dispose()));
             }
+        }
+
+        private void nudFileSize_ValueChanged(object sender, EventArgs e)
+        {
+            lblFileSize.Text = ((double)nudFileSize.Value).FormatFileSize(benchmark: MetricPrefixes.Mega);
         }
 
         private void Log(string message, Exception? ex = null)
