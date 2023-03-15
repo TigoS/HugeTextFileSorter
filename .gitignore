@@ -11,3 +11,4 @@
 *.user
 /MultiSorterLib/obj
 /MultiSorterLib/bin
+/AlphanumericSorterBenchmark/obj
