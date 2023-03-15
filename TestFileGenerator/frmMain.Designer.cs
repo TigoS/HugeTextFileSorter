@@ -40,26 +40,30 @@
             gbGenerate = new GroupBox();
             gbParameters = new GroupBox();
             tableLayoutPanel1 = new TableLayoutPanel();
+            label5 = new Label();
             lblFileSize = new Label();
-            label4 = new Label();
-            label3 = new Label();
-            nudMaxWordLength = new NumericUpDown();
-            nudMaxWordsCount = new NumericUpDown();
             label1 = new Label();
-            nudMaxNumber = new NumericUpDown();
-            label2 = new Label();
             nudFileSize = new NumericUpDown();
-            btnGenerate = new Button();
+            nudMaxNumber = new NumericUpDown();
+            nudMaxWordsCount = new NumericUpDown();
+            nudMaxWordLength = new NumericUpDown();
+            label2 = new Label();
+            label3 = new Label();
+            label4 = new Label();
+            nudDuplicateStringDensity = new NumericUpDown();
+            cbRandomDuplicates = new CheckBox();
+            btnGenerateAndSave = new Button();
             txtLog = new TextBox();
             saveFileDialog = new SaveFileDialog();
             statusStrip.SuspendLayout();
             gbGenerate.SuspendLayout();
             gbParameters.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)nudMaxWordLength).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)nudMaxWordsCount).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)nudMaxNumber).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudFileSize).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudMaxNumber).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudMaxWordsCount).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudMaxWordLength).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudDuplicateStringDensity).BeginInit();
             SuspendLayout();
             // 
             // statusStrip
@@ -128,11 +132,11 @@
             // gbGenerate
             // 
             gbGenerate.Controls.Add(gbParameters);
-            gbGenerate.Controls.Add(btnGenerate);
+            gbGenerate.Controls.Add(btnGenerateAndSave);
             gbGenerate.Dock = DockStyle.Top;
             gbGenerate.Location = new Point(0, 0);
             gbGenerate.Name = "gbGenerate";
-            gbGenerate.Size = new Size(822, 236);
+            gbGenerate.Size = new Size(822, 220);
             gbGenerate.TabIndex = 2;
             gbGenerate.TabStop = false;
             gbGenerate.Text = "Generate test file";
@@ -143,7 +147,7 @@
             gbParameters.Dock = DockStyle.Left;
             gbParameters.Location = new Point(3, 23);
             gbParameters.Name = "gbParameters";
-            gbParameters.Size = new Size(509, 210);
+            gbParameters.Size = new Size(509, 194);
             gbParameters.TabIndex = 9;
             gbParameters.TabStop = false;
             gbParameters.Text = "Parameters";
@@ -151,121 +155,71 @@
             // tableLayoutPanel1
             // 
             tableLayoutPanel1.ColumnCount = 3;
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 180F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 220F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.Controls.Add(label5, 0, 4);
             tableLayoutPanel1.Controls.Add(lblFileSize, 2, 0);
-            tableLayoutPanel1.Controls.Add(label4, 0, 5);
-            tableLayoutPanel1.Controls.Add(label3, 0, 4);
-            tableLayoutPanel1.Controls.Add(nudMaxWordLength, 1, 5);
-            tableLayoutPanel1.Controls.Add(nudMaxWordsCount, 1, 4);
             tableLayoutPanel1.Controls.Add(label1, 0, 0);
-            tableLayoutPanel1.Controls.Add(nudMaxNumber, 1, 3);
-            tableLayoutPanel1.Controls.Add(label2, 0, 3);
             tableLayoutPanel1.Controls.Add(nudFileSize, 1, 0);
+            tableLayoutPanel1.Controls.Add(nudMaxNumber, 1, 1);
+            tableLayoutPanel1.Controls.Add(nudMaxWordsCount, 1, 2);
+            tableLayoutPanel1.Controls.Add(nudMaxWordLength, 1, 3);
+            tableLayoutPanel1.Controls.Add(label2, 0, 1);
+            tableLayoutPanel1.Controls.Add(label3, 0, 2);
+            tableLayoutPanel1.Controls.Add(label4, 0, 3);
+            tableLayoutPanel1.Controls.Add(nudDuplicateStringDensity, 1, 4);
+            tableLayoutPanel1.Controls.Add(cbRandomDuplicates, 2, 4);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(3, 23);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 6;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 18F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 18F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 18F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 18F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 18F));
-            tableLayoutPanel1.Size = new Size(503, 184);
+            tableLayoutPanel1.RowCount = 5;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            tableLayoutPanel1.Size = new Size(503, 168);
             tableLayoutPanel1.TabIndex = 5;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Dock = DockStyle.Right;
+            label5.Location = new Point(19, 132);
+            label5.Name = "label5";
+            label5.Size = new Size(198, 36);
+            label5.TabIndex = 16;
+            label5.Text = "Duplicate String Density (%):";
+            label5.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // lblFileSize
             // 
             lblFileSize.AutoSize = true;
             lblFileSize.Dock = DockStyle.Left;
             lblFileSize.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblFileSize.Location = new Point(303, 0);
+            lblFileSize.Location = new Point(343, 0);
             lblFileSize.Name = "lblFileSize";
             lblFileSize.Size = new Size(64, 33);
             lblFileSize.TabIndex = 10;
             lblFileSize.Text = "100 MB";
             lblFileSize.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Dock = DockStyle.Right;
-            label4.Location = new Point(48, 150);
-            label4.Name = "label4";
-            label4.Size = new Size(129, 34);
-            label4.TabIndex = 9;
-            label4.Text = "Max Word Length:";
-            label4.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Dock = DockStyle.Right;
-            label3.Location = new Point(48, 117);
-            label3.Name = "label3";
-            label3.Size = new Size(129, 33);
-            label3.TabIndex = 3;
-            label3.Text = "Max Words Count:";
-            label3.TextAlign = ContentAlignment.MiddleCenter;
-            // 
-            // nudMaxWordLength
-            // 
-            nudMaxWordLength.Location = new Point(183, 153);
-            nudMaxWordLength.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
-            nudMaxWordLength.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            nudMaxWordLength.Name = "nudMaxWordLength";
-            nudMaxWordLength.Size = new Size(59, 27);
-            nudMaxWordLength.TabIndex = 10;
-            nudMaxWordLength.Value = new decimal(new int[] { 12, 0, 0, 0 });
-            // 
-            // nudMaxWordsCount
-            // 
-            nudMaxWordsCount.Location = new Point(183, 120);
-            nudMaxWordsCount.Maximum = new decimal(new int[] { 200, 0, 0, 0 });
-            nudMaxWordsCount.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            nudMaxWordsCount.Name = "nudMaxWordsCount";
-            nudMaxWordsCount.Size = new Size(59, 27);
-            nudMaxWordsCount.TabIndex = 4;
-            nudMaxWordsCount.Value = new decimal(new int[] { 100, 0, 0, 0 });
-            // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Dock = DockStyle.Right;
             label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label1.Location = new Point(69, 0);
+            label1.Location = new Point(109, 0);
             label1.Name = "label1";
             label1.Size = new Size(108, 33);
             label1.TabIndex = 12;
             label1.Text = "File Size (MB):";
             label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // nudMaxNumber
-            // 
-            nudMaxNumber.Location = new Point(183, 87);
-            nudMaxNumber.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0 });
-            nudMaxNumber.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            nudMaxNumber.Name = "nudMaxNumber";
-            nudMaxNumber.Size = new Size(114, 27);
-            nudMaxNumber.TabIndex = 3;
-            nudMaxNumber.Value = new decimal(new int[] { 1000000000, 0, 0, 0 });
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Dock = DockStyle.Right;
-            label2.Location = new Point(32, 84);
-            label2.Name = "label2";
-            label2.Size = new Size(145, 33);
-            label2.TabIndex = 11;
-            label2.Text = "Max Positive Integer:";
-            label2.TextAlign = ContentAlignment.MiddleCenter;
-            // 
             // nudFileSize
             // 
-            nudFileSize.Location = new Point(183, 3);
+            nudFileSize.Location = new Point(223, 3);
             nudFileSize.Maximum = new decimal(new int[] { 102400, 0, 0, 0 });
             nudFileSize.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             nudFileSize.Name = "nudFileSize";
@@ -274,27 +228,113 @@
             nudFileSize.Value = new decimal(new int[] { 100, 0, 0, 0 });
             nudFileSize.ValueChanged += nudFileSize_ValueChanged;
             // 
-            // btnGenerate
+            // nudMaxNumber
             // 
-            btnGenerate.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnGenerate.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            btnGenerate.Location = new Point(650, 198);
-            btnGenerate.Name = "btnGenerate";
-            btnGenerate.Size = new Size(160, 32);
-            btnGenerate.TabIndex = 2;
-            btnGenerate.Text = "Generate and Save";
-            btnGenerate.UseVisualStyleBackColor = true;
-            btnGenerate.Click += btnGenerateAndSave_Click;
+            nudMaxNumber.Location = new Point(223, 36);
+            nudMaxNumber.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0 });
+            nudMaxNumber.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudMaxNumber.Name = "nudMaxNumber";
+            nudMaxNumber.Size = new Size(114, 27);
+            nudMaxNumber.TabIndex = 3;
+            nudMaxNumber.Value = new decimal(new int[] { 1000000000, 0, 0, 0 });
+            // 
+            // nudMaxWordsCount
+            // 
+            nudMaxWordsCount.Location = new Point(223, 69);
+            nudMaxWordsCount.Maximum = new decimal(new int[] { 200, 0, 0, 0 });
+            nudMaxWordsCount.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudMaxWordsCount.Name = "nudMaxWordsCount";
+            nudMaxWordsCount.Size = new Size(59, 27);
+            nudMaxWordsCount.TabIndex = 4;
+            nudMaxWordsCount.Value = new decimal(new int[] { 100, 0, 0, 0 });
+            // 
+            // nudMaxWordLength
+            // 
+            nudMaxWordLength.Location = new Point(223, 102);
+            nudMaxWordLength.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
+            nudMaxWordLength.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudMaxWordLength.Name = "nudMaxWordLength";
+            nudMaxWordLength.Size = new Size(59, 27);
+            nudMaxWordLength.TabIndex = 10;
+            nudMaxWordLength.Value = new decimal(new int[] { 12, 0, 0, 0 });
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Dock = DockStyle.Right;
+            label2.Location = new Point(72, 33);
+            label2.Name = "label2";
+            label2.Size = new Size(145, 33);
+            label2.TabIndex = 11;
+            label2.Text = "Max Positive Integer:";
+            label2.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Dock = DockStyle.Right;
+            label3.Location = new Point(88, 66);
+            label3.Name = "label3";
+            label3.Size = new Size(129, 33);
+            label3.TabIndex = 3;
+            label3.Text = "Max Words Count:";
+            label3.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Dock = DockStyle.Right;
+            label4.Location = new Point(88, 99);
+            label4.Name = "label4";
+            label4.Size = new Size(129, 33);
+            label4.TabIndex = 9;
+            label4.Text = "Max Word Length:";
+            label4.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // nudDuplicateStringDensity
+            // 
+            nudDuplicateStringDensity.Enabled = false;
+            nudDuplicateStringDensity.Location = new Point(223, 135);
+            nudDuplicateStringDensity.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudDuplicateStringDensity.Name = "nudDuplicateStringDensity";
+            nudDuplicateStringDensity.Size = new Size(59, 27);
+            nudDuplicateStringDensity.TabIndex = 3;
+            nudDuplicateStringDensity.Value = new decimal(new int[] { 5, 0, 0, 0 });
+            // 
+            // cbRandomDuplicates
+            // 
+            cbRandomDuplicates.AutoSize = true;
+            cbRandomDuplicates.Checked = true;
+            cbRandomDuplicates.CheckState = CheckState.Checked;
+            cbRandomDuplicates.Location = new Point(343, 135);
+            cbRandomDuplicates.Name = "cbRandomDuplicates";
+            cbRandomDuplicates.Size = new Size(87, 24);
+            cbRandomDuplicates.TabIndex = 3;
+            cbRandomDuplicates.Text = "Random";
+            cbRandomDuplicates.UseVisualStyleBackColor = true;
+            cbRandomDuplicates.CheckedChanged += cbRandomDuplicates_CheckedChanged;
+            // 
+            // btnGenerateAndSave
+            // 
+            btnGenerateAndSave.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnGenerateAndSave.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            btnGenerateAndSave.Location = new Point(650, 182);
+            btnGenerateAndSave.Name = "btnGenerateAndSave";
+            btnGenerateAndSave.Size = new Size(160, 32);
+            btnGenerateAndSave.TabIndex = 2;
+            btnGenerateAndSave.Text = "Generate and Save";
+            btnGenerateAndSave.UseVisualStyleBackColor = true;
+            btnGenerateAndSave.Click += btnGenerateAndSave_Click;
             // 
             // txtLog
             // 
             txtLog.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            txtLog.Location = new Point(0, 242);
+            txtLog.Location = new Point(0, 226);
             txtLog.Multiline = true;
             txtLog.Name = "txtLog";
             txtLog.ReadOnly = true;
             txtLog.ScrollBars = ScrollBars.Both;
-            txtLog.Size = new Size(822, 162);
+            txtLog.Size = new Size(822, 178);
             txtLog.TabIndex = 0;
             // 
             // saveFileDialog
@@ -319,10 +359,11 @@
             gbParameters.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)nudMaxWordLength).EndInit();
-            ((System.ComponentModel.ISupportInitialize)nudMaxWordsCount).EndInit();
-            ((System.ComponentModel.ISupportInitialize)nudMaxNumber).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudFileSize).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudMaxNumber).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudMaxWordsCount).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudMaxWordLength).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudDuplicateStringDensity).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -339,7 +380,7 @@
         private ToolStripStatusLabel toolStripStatusLabel5;
         private ToolStripStatusLabel tsslExecutionTime;
         private GroupBox gbGenerate;
-        private Button btnGenerate;
+        private Button btnGenerateAndSave;
         private TextBox txtLog;
         private SaveFileDialog saveFileDialog;
         private TableLayoutPanel tableLayoutPanel1;
@@ -353,5 +394,8 @@
         private Label label1;
         private NumericUpDown nudFileSize;
         private Label lblFileSize;
+        private Label label5;
+        private NumericUpDown nudDuplicateStringDensity;
+        private CheckBox cbRandomDuplicates;
     }
 }

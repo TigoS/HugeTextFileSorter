@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using MultiSorterLib;
+using TestFileGenerator.Properties;
 using static MultiSorterLib.FileSizeExtensions;
 
 namespace TestFileGenerator
@@ -9,6 +10,8 @@ namespace TestFileGenerator
     {
         private readonly Stopwatch sw = new();
 
+        private long generatedLinesCount;
+
         public frmMain()
         {
             InitializeComponent();
@@ -16,68 +19,102 @@ namespace TestFileGenerator
 
         private void btnGenerateAndSave_Click(object sender, EventArgs e)
         {
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                gbGenerate.Enabled = false;
+            var cts = new CancellationTokenSource();
 
-                tsslFileSize.Text = string.Empty;
-                tsslLinesCount.Text = string.Empty;
-                tsslExecutionTime.Text = string.Empty;
+            if (btnGenerateAndSave.Text.Equals(Resources.BTN_CANCEL))
+            {
+                if (MessageBox.Show(Resources.MSG_CANCEL, Resources.MSG_BOX_CAPTION, MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    cts.Cancel();
+
+                    UpdateControls(false);
+                }
+            }
+            else if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                UpdateControls(true);
 
                 long fileSize = ((double)nudFileSize.Value).GetFileSizeInBytes(MetricPrefixes.Mega);
                 int maxNumber = (int)nudMaxNumber.Value;
                 int maxWordsCount = (int)nudMaxWordsCount.Value;
                 int maxWordLength = (int)nudMaxWordLength.Value;
+                short duplicateStringDensity = (short)(cbRandomDuplicates.Checked ? 0 : nudDuplicateStringDensity.Value);
 
-                Log($"Generating test file. File size: {((double)fileSize).FormatFileSize()}; Max Number: {maxNumber}; Max Words Count: {maxWordsCount}; Max Word Length: {maxWordLength}.");
-
-                var cts = new CancellationTokenSource();
+                Log($"Generating test file. File Size: {((double)fileSize).FormatFileSize()}; Max Number: {maxNumber}; Max Words Count: {maxWordsCount}; Max Word Length: {maxWordLength}; Duplicate String Density: {duplicateStringDensity}%.");
 
                 sw.Reset();
                 sw.Start();
 
-                Task.Run(() =>
-                            RandomFileGenerator.GenerateTestFile(
-                                saveFileDialog.FileName,
-                                fileSize,
-                                maxNumber,
-                                maxWordsCount,
-                                maxWordLength),
-                        cts.Token)
-                    .ContinueWith(generatedLinesCountTask =>
-                    {
-                        Invoke(() =>
+                try
+                {
+                    Task.Run(() =>
+                                RandomFileGenerator.GenerateTestFile(
+                                    saveFileDialog.FileName,
+                                    fileSize,
+                                    maxNumber,
+                                    maxWordsCount,
+                                    maxWordLength,
+                                    duplicateStringDensity),
+                            cts.Token)
+                        .ContinueWith(generatedLinesCountTask =>
                         {
-                            sw.Stop();
-
-                            Log($"File successfully Generated and Saved in: {sw.Elapsed:c}");
-
-                            tsslExecutionTime.Text = sw.Elapsed.ToString("c");
-
-                            if (generatedLinesCountTask is { IsCanceled: false, IsFaulted: false })
+                            Invoke(() =>
                             {
-                                var generatedLinesCount = generatedLinesCountTask.Result;
-                                tsslLinesCount.Text = generatedLinesCount.ToString("##,###");
+                                sw.Stop();
 
-                                if (generatedLinesCount < 1)
+                                Log($"File successfully Generated and Saved in: {sw.Elapsed:c}");
+
+                                if (generatedLinesCountTask is { IsCanceled: false, IsFaulted: false })
                                 {
-                                    Log($"Failed to generate a new file: '{saveFileDialog.FileName}'");
+                                    generatedLinesCount = generatedLinesCountTask.Result;
+
+                                    if (generatedLinesCount < 1)
+                                    {
+                                        Log($"Failed to generate a new file: '{saveFileDialog.FileName}'");
+                                    }
                                 }
-                            }
 
-                            FileInfo fileInfo = new FileInfo(saveFileDialog.FileName);
-                            tsslFileSize.Text = ((double)fileInfo.Length).FormatFileSize();
-
-                            gbGenerate.Enabled = true;
-                        });
-                    })
-                    .ContinueWith(_ => Invoke(() => cts.Dispose()));
+                                UpdateControls(false);
+                            });
+                        }, cts.Token);
+                }
+                catch (AggregateException ae)
+                {
+                    foreach (Exception ex in ae.InnerExceptions)
+                    {
+                        Log(ex is TaskCanceledException exception
+                            ? $"File generation cancelled by user! Inner exception: {exception}"
+                            : $"File generation failed! Error: {ex.GetType().Name} - {ex.Message}");
+                    }
+                }
+                finally
+                {
+                    UpdateControls(false);
+                    cts.Dispose();
+                }
             }
         }
 
         private void nudFileSize_ValueChanged(object sender, EventArgs e)
         {
             lblFileSize.Text = ((double)nudFileSize.Value).FormatFileSize(benchmark: MetricPrefixes.Mega);
+        }
+
+        private void cbRandomDuplicates_CheckedChanged(object sender, EventArgs e)
+        {
+            nudDuplicateStringDensity.Enabled = !cbRandomDuplicates.Checked;
+        }
+
+        private void UpdateControls(bool generationInProgress)
+        {
+            gbGenerate.Enabled = !generationInProgress;
+            this.Cursor = generationInProgress ? Cursors.WaitCursor : Cursors.Default;
+            btnGenerateAndSave.Cursor = Cursor.Current;
+            btnGenerateAndSave.Text = generationInProgress ? Resources.BTN_CANCEL : Resources.BTN_GENERATE_AND_SAVE;
+
+            tsslFileSize.Text = generationInProgress ? string.Empty : ((double)new FileInfo(saveFileDialog.FileName).Length).FormatFileSize();
+            tsslLinesCount.Text = generationInProgress ? string.Empty : generatedLinesCount.ToString("##,###");
+            tsslExecutionTime.Text = generationInProgress ? string.Empty : sw.Elapsed.ToString("c");
         }
 
         private void Log(string message, Exception? ex = null)
