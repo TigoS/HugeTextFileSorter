@@ -1,6 +1,4 @@
 using System.Diagnostics;
-using System.Text;
-using MultiSorterLib;
 using static TestFileGenerator.FileSizeExtensions;
 
 namespace TestFileGenerator
@@ -10,41 +8,9 @@ namespace TestFileGenerator
     {
         private readonly Stopwatch sw = new();
 
-        private long generatedLinesCount;
-
         public frmMain()
         {
             InitializeComponent();
-        }
-
-        // TODO: Consider moving to the MultiSorterLib DLL
-        private void GenerateTestFile(
-            long fileSize,
-            int maxNumber = int.MaxValue,
-            int maxWordsCount = 100,
-            int maxWordLength = 12)
-        {
-            StringBuilder sb = new StringBuilder();
-            FileInfo fileInfo = new FileInfo(saveFileDialog1.FileName);
-
-            while (fileInfo.Length < fileSize - ushort.MaxValue)
-            {
-                generatedLinesCount++;
-
-                if (sb.Length >= ushort.MaxValue)
-                {
-                    File.AppendAllText(saveFileDialog1.FileName, sb.ToString());
-
-                    sb.Clear();
-
-                    fileInfo = new FileInfo(saveFileDialog1.FileName);
-                }
-
-                sb.AppendLine(string.Format(AlphanumericEntity.LinePattern,
-                    RandomLineGenerator.GetRandomNumber(maxNumber),
-                    AlphanumericEntity.Delimiter,
-                    RandomLineGenerator.GetRandomString(maxWordsCount, maxWordLength)));
-            }
         }
 
         private void btnGenerateAndSave_Click(object sender, EventArgs e)
@@ -74,9 +40,10 @@ namespace TestFileGenerator
                 sw.Start();
 
                 Task.Run(() =>
-                        GenerateTestFile(fileSize, maxNumber, maxWordsCount, maxWordLength),
-                    cts.Token)
-                    .ContinueWith(_ =>
+                            RandomFileGenerator.GenerateTestFile(saveFileDialog1.FileName, fileSize, maxNumber,
+                                maxWordsCount, maxWordLength),
+                        cts.Token)
+                    .ContinueWith(generatedLinesCount =>
                     {
                         Invoke(() =>
                         {
@@ -85,10 +52,14 @@ namespace TestFileGenerator
                             Log($"File successfully Generated and Saved in: {sw.Elapsed:c}");
 
                             tsslExecutionTime.Text = sw.Elapsed.ToString("c");
-                            tsslLinesCount.Text = generatedLinesCount.ToString("##,###");
+
+                            if (generatedLinesCount is {IsCanceled: false, IsFaulted: false})
+                            {
+                                tsslLinesCount.Text = generatedLinesCount.Result.ToString("##,###");
+                            }
 
                             FileInfo fileInfo = new FileInfo(saveFileDialog1.FileName);
-                            tsslFileSize.Text = ((double)fileInfo.Length).FormatFileSize();
+                            tsslFileSize.Text = ((double) fileInfo.Length).FormatFileSize();
 
                             gbGenerate.Enabled = true;
                         });
