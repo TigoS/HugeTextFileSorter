@@ -27,3 +27,7 @@
    - Loading the input file, Sorting and Saving the output to a separate file
 
 #### _All projects were built using the .Core 7/C# 11_
+
+## Binaries
+
+#### _All executables and binary files are located in the _'_BIN'_ folder.
