@@ -23,10 +23,6 @@
             entities = null;
 
             entities = sortedEntities;
-
-            // TODO: Temporary hack to reduce memory consumption
-            sortedEntities = null;
-            sortedEntities?.GetEnumerator().Dispose();
         }
 
         public void SaveToFile(string fileName)

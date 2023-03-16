@@ -36,12 +36,6 @@ do
             Console.WriteLine("An exception was thrown during app execution.");
             Console.WriteLine($"Error details: {e}");
         }
-        finally
-        {
-            // TODO: Get rid of direct GC call
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-        }
 
         sw.Stop();
 
