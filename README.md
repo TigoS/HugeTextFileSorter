@@ -30,4 +30,4 @@
 
 ## Binaries
 
-#### All executables and binary files are located in the _'_BIN'_ folder.
+#### All executables and binary files are located in the __'_BIN'__ folder.
