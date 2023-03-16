@@ -18,7 +18,7 @@ do
         //  as it's checked to be a valid directory path just a line above
         string outputFileName = Path.Combine(Path.GetDirectoryName(fileName)!,
             Path.GetFileNameWithoutExtension(fileName) +
-            "_Output" + Path.GetExtension(fileName));
+            "_Sorted" + Path.GetExtension(fileName));
 
         Console.WriteLine("Starting file Loading and Sorting... ");
 

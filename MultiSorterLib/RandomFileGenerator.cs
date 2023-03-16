@@ -18,7 +18,8 @@ namespace MultiSorterLib
             int maxNumber = int.MaxValue,
             int maxWordsCount = 150,
             int maxWordLength = 20,
-            short duplicateStringDensity = 0)
+            short duplicateStringDensity = 0,
+            CancellationToken cts = default)
         {
             // Creating an empty file to be able to track it's size change via 'FileInfo'
             var fileStream = File.Create(fileName);
@@ -46,6 +47,11 @@ namespace MultiSorterLib
 
             while (fileInfo.Length < fileSize - ushort.MaxValue)
             {
+                if (cts.IsCancellationRequested)
+                {
+                    cts.ThrowIfCancellationRequested();
+                }
+
                 generatedLinesCount++;
 
                 if (sb.Length >= ushort.MaxValue)
@@ -79,6 +85,11 @@ namespace MultiSorterLib
 
             for (int i = 0; i < linesCountToFulfillExpectedSize; i++)
             {
+                if (cts.IsCancellationRequested)
+                {
+                    cts.ThrowIfCancellationRequested();
+                }
+
                 generatedLinesCount++;
 
                 if (duplicateStringDensity >= Hundred)

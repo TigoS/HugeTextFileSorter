@@ -32,7 +32,7 @@ namespace AlphanumericSorterBenchmark
             var formattedFileSize = ((double)InputFileSize).FormatFileSize();
 
             InputFileName = Path.Combine(storageDirectory, $"{formattedFileSize}_Benchmark_Test.txt");
-            OutputFileName = Path.Combine(storageDirectory, $"{formattedFileSize}_Benchmark_Test_OUT.txt");
+            OutputFileName = Path.Combine(storageDirectory, $"{formattedFileSize}_Benchmark_Test_SORTED.txt");
 
             // Generate benchmark test file
             GenerateTestFile();

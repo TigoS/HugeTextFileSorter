@@ -45,16 +45,11 @@
                 File.WriteAllLines(fileName, entities.Select(s => s.EntityLine));
             }
         }
-
-        public void CleanupEntities()
-        {
-            entities?.GetEnumerator().Dispose();
-            entities = null;
-        }
         
         public void Dispose()
         {
-            CleanupEntities();
+            entities?.GetEnumerator().Dispose();
+            entities = null;
         }
 
         private static IEnumerable<AlphanumericEntity> EnumerateEntities(IEnumerable<string> lines)

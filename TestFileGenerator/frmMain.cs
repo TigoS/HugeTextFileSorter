@@ -9,6 +9,7 @@ namespace TestFileGenerator
     {
         private readonly Stopwatch sw = new();
 
+        private CancellationTokenSource cts = new();
         private long generatedLinesCount;
 
         public frmMain()
@@ -20,13 +21,11 @@ namespace TestFileGenerator
 
         private void btnGenerateAndSave_Click(object sender, EventArgs e)
         {
-            var cts = new CancellationTokenSource();
-
             if (btnGenerateAndSave.Text.Equals(Resources.BTN_CANCEL))
             {
                 if (MessageBox.Show(Resources.MSG_CANCEL, Resources.MSG_BOX_CAPTION, MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    Log("The file generation process was canceled by the User!");
+                    Log("File generation process cancellation requested by the User!");
 
                     cts.Cancel();
 
@@ -50,6 +49,8 @@ namespace TestFileGenerator
 
                 try
                 {
+                    ResetCancellationTokenSource();
+
                     Task.Run(() =>
                                 RandomFileGenerator.GenerateTestFile(
                                     saveFileDialog.FileName,
@@ -57,17 +58,17 @@ namespace TestFileGenerator
                                     maxNumber,
                                     maxWordsCount,
                                     maxWordLength,
-                                    duplicateStringDensity),
-                            cts.Token)
+                                    duplicateStringDensity,
+                                    cts.Token))
                         .ContinueWith(generatedLinesCountTask =>
                         {
                             Invoke(() =>
                             {
                                 sw.Stop();
 
-                                Log($"File successfully Generated and Saved in: {sw.Elapsed:c}");
+                                Log(cts.IsCancellationRequested ? "File generation canceled by the User!" : $"File successfully Generated and Saved in: {sw.Elapsed:c}");
 
-                                if (generatedLinesCountTask is { IsCanceled: false, IsFaulted: false })
+                                if (generatedLinesCountTask is {IsCanceled: false, IsFaulted: false})
                                 {
                                     generatedLinesCount = generatedLinesCountTask.Result;
 
@@ -79,23 +80,26 @@ namespace TestFileGenerator
 
                                 UpdateControls(false);
 
-                                // Suppressed the possible null reference warning, as the directory is known to be valid here
-                                Process.Start("explorer.exe", Path.GetDirectoryName(saveFileDialog.FileName)!);
+                                if (cbOpenDirectoryOnComplete.Checked && !cts.IsCancellationRequested)
+                                {
+                                    // Suppressed the possible null reference warning, as the directory is known to be valid here
+                                    Process.Start("explorer.exe", Path.GetDirectoryName(saveFileDialog.FileName)!);
+                                }
                             });
-                        }, cts.Token);
+                        });
                 }
                 catch (AggregateException ae)
                 {
                     foreach (Exception ex in ae.InnerExceptions)
                     {
-                        Log(ex is TaskCanceledException exception
-                            ? $"File generation is canceled by the User! Inner exception: {exception}"
-                            : $"File generation failed! Error: {ex.GetType().Name} - {ex.Message}");
+                        bool isTaskCanceledException = ex is TaskCanceledException;
+                        Log(isTaskCanceledException ? "File generation is canceled by the User!" : "File generation failed!",
+                            isTaskCanceledException ? ex : ex as TaskCanceledException);
                     }
                 }
                 finally
                 {
-                    cts.Dispose();
+                    ResetCancellationTokenSource();
                 }
             }
         }
@@ -133,6 +137,14 @@ namespace TestFileGenerator
             tsslFileSize.Text = generationInProgress ? string.Empty : ((double)new FileInfo(saveFileDialog.FileName).Length).FormatFileSize();
             tsslLinesCount.Text = generationInProgress ? string.Empty : generatedLinesCount.ToString("##,###");
             tsslExecutionTime.Text = generationInProgress ? string.Empty : sw.Elapsed.ToString("c");
+        }
+
+        private void ResetCancellationTokenSource()
+        {
+            if (cts.IsCancellationRequested && !cts.TryReset())
+            {
+                cts = new CancellationTokenSource();
+            }
         }
 
         private void Log(string message, Exception? ex = null)
