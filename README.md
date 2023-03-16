@@ -2,11 +2,11 @@
 
 ## Test Task
 
-#### Test task details are stored in the original **test task.pdf** document.
+#### Test task details are stored in the original ***'test task.pdf'*** document.
 
 ## Task-related Q & A
 
-#### Task-related Q & A document is stored in **Task-related Q&A.txt** file.
+#### Task-related Q & A document is stored in ***'Task-related Q&A.txt'*** file.
 
 ## Solution projects
 
