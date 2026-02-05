@@ -4,16 +4,23 @@ using TestFileGenerator;
 
 namespace AlphanumericSorterBenchmark
 {
+    /// <summary>
+    /// Provides benchmark methods for generating, sorting, and saving large alphanumeric test files to evaluate sorting
+    /// performance.
+    /// </summary>
+    /// <remarks>This class is intended for use with benchmarking frameworks such as BenchmarkDotNet. It
+    /// automates the setup, execution, and cleanup of sorting benchmarks, including test file generation and resource
+    /// management. The class is not thread-safe.</remarks>
     [MemoryDiagnoser()]
     public class BenchmarkSorter : IDisposable
     {
         private static readonly double TestFileRelativeSize = 100;
         private static readonly FileSizeExtensions.MetricPrefixes MetricPrefix = FileSizeExtensions.MetricPrefixes.Mega;
 
-        private readonly long InputFileSize;
-        private readonly string InputFileName;
-        private readonly string OutputFileName;
+        private readonly long inputFileSize;
+        private readonly string inputFileName;
 
+        private string outputFileName = string.Empty;
         private long generatedLinesCount;
         private AlphanumericSorterHelper? sorterHelper;
 
@@ -29,25 +36,24 @@ namespace AlphanumericSorterBenchmark
                 Directory.CreateDirectory(storageDirectory);
             }
 
-            InputFileSize = TestFileRelativeSize.GetFileSizeInBytes(MetricPrefix);
-            var formattedFileSize = ((double)InputFileSize).FormatFileSize();
+            inputFileSize = TestFileRelativeSize.GetFileSizeInBytes(MetricPrefix);
+            var formattedFileSize = ((double)inputFileSize).FormatFileSize();
 
-            InputFileName = Path.Combine(storageDirectory, $"{formattedFileSize}_Benchmark_Test.txt");
-            OutputFileName = Path.Combine(storageDirectory, $"{formattedFileSize}_Benchmark_Test_SORTED.txt");
+            inputFileName = Path.Combine(storageDirectory, $"{formattedFileSize}_Benchmark_Test.txt");
 
             // Generate benchmark test file
             GenerateTestFile();
 
-            // Sorting
+            // Sorting and saving output file to ensure everything is working before benchmarking
             InitializeSorter();
             Sort();
-            SaveToFile();
+            SaveOutputFile();
         }
 
         [Benchmark]
         public void GenerateTestFile()
         {
-            generatedLinesCount = RandomFileGenerator.GenerateTestFile(InputFileName, InputFileSize);
+            generatedLinesCount = RandomFileGenerator.GenerateTestFile(inputFileName, inputFileSize);
         }
 
         [Benchmark]
@@ -55,7 +61,8 @@ namespace AlphanumericSorterBenchmark
         {
             if (generatedLinesCount > 0)
             {
-                sorterHelper = new AlphanumericSorterHelper(InputFileName);
+                sorterHelper = new AlphanumericSorterHelper(inputFileName);
+                outputFileName = sorterHelper.OutputFileName;
             }
         }
 
@@ -66,9 +73,9 @@ namespace AlphanumericSorterBenchmark
         }
 
         [Benchmark]
-        public void SaveToFile()
+        public void SaveOutputFile()
         {
-            sorterHelper?.SaveToFile(OutputFileName);
+            sorterHelper?.SaveOutputFile();
         }
 
         public void Dispose()
