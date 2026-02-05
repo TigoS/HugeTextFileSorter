@@ -1,4 +1,4 @@
-# AltiumTestProject
+# Huge text file sorter
 
 ## Test Task
 
@@ -10,23 +10,29 @@
 
 ## Solution projects
 
-#### There are 4 projects in this solution:
+#### There are 6 projects in this solution:
 
 1. ***MultiSorterLib*** class library, containing the following classes:
    - Contains the **AlphanumericEntity**
    - Contains the **AlphanumericSorterHelper**, responsible for sorting
    - Contains the **FileSizeExtensions**, holding solution-wide extension methods
    - Contains the **RandomFileGenerator**, responsible for test file generation
+  
+2. ***MultiSorterLib.Tests*** Unit Tests for **MultiSorterLib**
+   - Overall 13 tests
    
-2. ***TestFileGenerator*** WinForms application, providing test file generation UI tool
+3. ***TestFileGenerator*** WinForms application, providing a test file generation UI tool
+   
+4. ***TestFileGenerator.Tests*** Unit Tests for **TestFileGenerator**
+   - Overall 8 tests
 
-3. ***AlphanumericSorterConsole*** console application, supplying a sorting interface
+5. ***AlphanumericSorterConsole*** console application, supplying a sorting interface
 
-4. ***AlphanumericSorterBenchmark*** console application, used for Benchmark testing of whole functionality:
+6. ***AlphanumericSorterBenchmark*** console application, used for Benchmark testing of the whole functionality:
    - Test file Generation and Storing to the file system
-   - Loading the input file, Sorting and Saving the output to a separate file
+   - Loading the input file, Sorting and saving the output to a separate file
 
-#### _All projects were built using the .Core 7/C# 11_
+#### _All projects were built using the .NET 8/C# 14_
 
 ## Binaries
 
