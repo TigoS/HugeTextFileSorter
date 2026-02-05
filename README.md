@@ -1,4 +1,4 @@
-# AltiumTestProject
+# Huge text file sorter
 
 ## Test Task
 
