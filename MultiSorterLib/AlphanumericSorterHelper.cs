@@ -17,7 +17,7 @@
         
         public void Sort()
         {
-            var sortedEntities = entities?.ToHashSet().Order();
+            var sortedEntities = entities?.ToArray().Order();
 
             entities?.GetEnumerator().Dispose();
             entities = null;
