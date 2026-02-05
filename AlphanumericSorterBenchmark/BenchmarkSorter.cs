@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using MultiSorterLib;
+using TestFileGenerator;
 
 namespace AlphanumericSorterBenchmark
 {
@@ -7,7 +8,7 @@ namespace AlphanumericSorterBenchmark
     public class BenchmarkSorter : IDisposable
     {
         private static readonly double TestFileRelativeSize = 100;
-        private static readonly FileSizeExtensions.MetricPrefixes MetricPrefix = FileSizeExtensions.MetricPrefixes.Giga;
+        private static readonly FileSizeExtensions.MetricPrefixes MetricPrefix = FileSizeExtensions.MetricPrefixes.Mega;
 
         private readonly long InputFileSize;
         private readonly string InputFileName;
