@@ -52,17 +52,45 @@
             entities = null;
         }
 
+        private static IEnumerable<string> GetSplit(string s, char c)
+        {
+            int l = s.Length;
+            int i = 0, j = s.IndexOf(c, 0, l);
+
+            if (j == -1) // No such substring
+            {
+                yield return s; // Return original and break
+                yield break;
+            }
+
+            while (j != -1)
+            {
+                if (j - i > 0) // Non empty? 
+                {
+                    yield return s.Substring(i, j - i); // Return non-empty match
+                }
+                i = j + 1;
+                j = s.IndexOf(c, i, l - i);
+            }
+
+            if (i < l) // Has remainder?
+            {
+                yield return s.Substring(i, l - i); // Return remaining trail
+            }
+        }
+
         private static IEnumerable<AlphanumericEntity> EnumerateEntities(IEnumerable<string> lines)
         {
             IEnumerator<string> enumerator = lines.GetEnumerator();
 
             try
             {
+                string[]? parts;
                 while (enumerator.MoveNext())
                 {
-                    var parts = enumerator.Current.Split(AlphanumericEntity.Delimiter);
+                    parts = GetSplit(enumerator.Current, AlphanumericEntity.Delimiter).ToArray();
 
-                    if (parts.Length == 2 && int.TryParse(parts[0].Trim(), out int numericPart))
+                    if (parts != null && parts.Length == 2 && int.TryParse(parts[0].Trim(), out int numericPart))
                     {
                         yield return new AlphanumericEntity(parts[1].Trim(), numericPart);
                     }
