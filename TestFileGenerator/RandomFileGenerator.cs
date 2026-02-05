@@ -1,7 +1,8 @@
-﻿using System.Text;
+﻿using MultiSorterLib;
+using System.Text;
 using static MultiSorterLib.FileSizeExtensions;
 
-namespace MultiSorterLib
+namespace TestFileGenerator
 {
     public static class RandomFileGenerator
     {
