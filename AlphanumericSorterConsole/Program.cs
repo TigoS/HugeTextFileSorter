@@ -14,12 +14,7 @@ do
 
     if (File.Exists(fileName))
     {
-        // The following `Path.GetDirectoryName()` possible nullable warning is suppressed
-        //  as it's checked to be a valid directory path just a line above
-        string outputFileName = Path.Combine(Path.GetDirectoryName(fileName)!,
-            Path.GetFileNameWithoutExtension(fileName) +
-            "_Sorted" + Path.GetExtension(fileName));
-
+        string outputFileName = string.Empty;
         Console.WriteLine("Starting file Loading and Sorting... ");
 
         sw.Reset();
@@ -29,7 +24,8 @@ do
         {
             using AlphanumericSorterHelper sorterHelper = new AlphanumericSorterHelper(fileName);
             sorterHelper.Sort();
-            sorterHelper.SaveToFile(outputFileName);
+            sorterHelper.SaveOutputFile();
+            outputFileName = sorterHelper.OutputFileName;
         }
         catch (Exception e)
         {
