@@ -19,7 +19,7 @@
    - Contains the **RandomFileGenerator**, responsible for test file generation
   
 2. ***MultiSorterLib.Tests*** Unit Tests for **MultiSorterLib**
-   - Overall 13 tests
+   - Overall 16 tests
    
 3. ***TestFileGenerator*** WinForms application, providing a test file generation UI tool
    
