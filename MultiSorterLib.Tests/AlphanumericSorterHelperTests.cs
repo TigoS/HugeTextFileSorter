@@ -10,6 +10,10 @@ namespace TestFileGenerator.Tests
             typeof(AlphanumericSorterHelper).GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static, null, types, null)
             ?? throw new InvalidOperationException($"Method '{name}' not found.");
 
+        private static MethodInfo GetPublic(string name, params Type[] types) =>
+            typeof(AlphanumericSorterHelper).GetMethod(name, BindingFlags.Public | BindingFlags.Static, null, types, null)
+            ?? throw new InvalidOperationException($"Method '{name}' not found.");
+
         [Test]
         public void Constructor_WhenInputFileMissing_ThrowsFileNotFoundException()
         {
@@ -72,7 +76,7 @@ namespace TestFileGenerator.Tests
         [Test]
         public void EnumerateEntities_ParsesValidLines_IgnoresInvalid()
         {
-            var mi = GetPrivate("EnumerateEntities", typeof(IEnumerable<string>));
+            var mi = GetPublic("EnumerateEntities", typeof(IEnumerable<string>));
             var input = new[] { "1. A", "bad", "  2  . B  ", "C. 3", "3 . C" };
             var res = ((IEnumerable<AlphanumericEntity>)mi.Invoke(null, [input])).ToArray();
 

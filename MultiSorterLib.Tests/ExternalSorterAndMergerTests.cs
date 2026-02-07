@@ -23,8 +23,17 @@ namespace TestFileGenerator.Tests
                 {
                     Assert.That(File.Exists(temp), Is.True);
                     var chunkLines = File.ReadAllLines(temp);
+
                     // Verify sorted ascending (Ordinal)
-                    var sorted = chunkLines.OrderBy(s => s, StringComparer.Ordinal).ToArray();
+                    var entities = AlphanumericSorterHelper.EnumerateEntities(chunkLines);
+                    var sortedEntities = entities.ToArray().Order();
+
+                    entities.GetEnumerator().Dispose();
+                    entities = null;
+
+                    var sorted = sortedEntities.Select(s => s.EntityLine).ToArray();
+
+
                     Assert.That(chunkLines, Is.EqualTo(sorted).AsCollection);
                 }
             }
