@@ -111,7 +111,7 @@ namespace TestFileGenerator.Tests
 
             try
             {
-                long fileSize = 200_000; // moderate size to allow generation
+                ulong fileSize = 200_000; // moderate size to allow generation
                 long lines = RandomFileGenerator.GenerateTestFile(
                     file,
                     fileSize,
@@ -139,7 +139,7 @@ namespace TestFileGenerator.Tests
 
             try
             {
-                long fileSize = 1_000_000; // must be greater than ushort.MaxValue to enter generation loop
+                ulong fileSize = 1_000_000; // must be greater than ushort.MaxValue to enter generation loop
                 using CancellationTokenSource cts = new CancellationTokenSource();
                 cts.Cancel(); // cancel before call
 
