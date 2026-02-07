@@ -11,8 +11,12 @@
     public sealed class AlphanumericSorterHelper : IDisposable
     {
         private readonly string? inputFileName;
+        private readonly ulong inputFileSize = 0;
+        private readonly bool canBeRunInAvailablePhysicalMemory = false;
         private readonly string? outputFileName;
+
         private IEnumerable<AlphanumericEntity>? entities;
+        private List<string>? sortedChunkFiles;
 
         public string OutputFileName => outputFileName ?? string.Empty;
 
@@ -25,55 +29,115 @@
         /// <exception cref="FileNotFoundException">Thrown if the file specified by <paramref name="fileName"/> does not exist.</exception>
         public AlphanumericSorterHelper(string fileName)
         {
-            if (File.Exists(fileName))
-            {
-                inputFileName = fileName;
-
-                // The following `Path.GetDirectoryName()` possible nullable warning is suppressed
-                //  as it's checked to be a valid directory path just a line above
-                outputFileName = Path.Combine(
-                    Path.GetDirectoryName(fileName)!,
-                    Path.GetFileNameWithoutExtension(fileName) +
-                    "_Sorted" + Path.GetExtension(fileName));
-
-                entities = EnumerateEntities(File.ReadLines(inputFileName));
-            }
-            else
+            if (!File.Exists(fileName))
             {
                 throw new FileNotFoundException("The specified input file was not found.", fileName);
             }
+
+            inputFileName = fileName;
+            inputFileSize = (ulong)new FileInfo(fileName).Length;
+            canBeRunInAvailablePhysicalMemory = 2 * inputFileSize < SystemMemoryHelper.GetAvailablePhysicalMemoryBytes();
+
+            // The following `Path.GetDirectoryName()` possible nullable warning is suppressed
+            //  as it's checked to be a valid directory path just a line above
+            outputFileName = Path.Combine(
+                Path.GetDirectoryName(fileName)!,
+                Path.GetFileNameWithoutExtension(fileName) +
+                "_Sorted" + Path.GetExtension(fileName));
         }
         
         /// <summary>
-        /// Sorts the collection of entities in ascending order.
+        /// Sorts the entities from the input file, using either in-memory or external sorting depending on available
+        /// physical memory.
         /// </summary>
-        /// <remarks>After sorting, the original collection is replaced with the sorted sequence. If the
-        /// collection is null, no action is taken.</remarks>
+        /// <remarks>If sufficient physical memory is available, the method performs an in-memory sort for
+        /// improved performance. Otherwise, it uses an external sorting algorithm, which may involve temporary files
+        /// and slower processing. The sorting operation prepares the entities for subsequent access in sorted
+        /// order.</remarks>
+        /// <exception cref="FileNotFoundException">Thrown if the input file name is not specified or is invalid.</exception>
         public void Sort()
         {
-            var sortedEntities = entities?.ToArray().Order();
+            if (string.IsNullOrWhiteSpace(inputFileName))
+            {
+                throw new FileNotFoundException("Input file name is not specified or is invalid.");
+            }
 
-            entities?.GetEnumerator().Dispose();
-            entities = null;
+            if (canBeRunInAvailablePhysicalMemory)
+            {
+                entities = EnumerateEntities(File.ReadLines(inputFileName));
+                var sortedEntities = entities.ToArray().Order();
 
-            entities = sortedEntities;
+                entities.GetEnumerator().Dispose();
+                entities = null;
+                entities = sortedEntities;
+            }
+            else
+            {
+                // If the data cannot be sorted in memory, need to use an external sorting algorithm here
+                sortedChunkFiles = ExternalSorter.CreateSortedChunks(inputFileName);
+            }
         }
 
         /// <summary>
-        /// Saves the output file containing all entity lines if an output file name is specified and entities are
-        /// available.
+        /// Writes the sorted output data to the specified output file. Uses in-memory or external sorting based on
+        /// available memory and data size.
         /// </summary>
-        /// <remarks>This method writes each entity's line to the specified output file. The file is only
-        /// created or overwritten if the output file name is not null, empty, or whitespace, and there is at least one
-        /// entity present. If these conditions are not met, no file is written.</remarks>
+        /// <remarks>If the data set is small enough to fit in available physical memory, the output is
+        /// written directly from memory. For larger data sets, external sorting is used and the output is generated by
+        /// merging sorted chunk files. Ensure that the output file name is valid and accessible before calling this
+        /// method.</remarks>
+        /// <exception cref="FileNotFoundException">Thrown if the output file name is not specified or is invalid.</exception>
         public void SaveOutputFile()
         {
-            if (!string.IsNullOrWhiteSpace(outputFileName) && entities?.LongCount() > 0)
+            if (string.IsNullOrWhiteSpace(outputFileName))
+            {
+                throw new FileNotFoundException("Output file name is not specified or is invalid.");
+            }
+
+            if (canBeRunInAvailablePhysicalMemory && entities != null && entities.LongCount() > 0)
             {
                 File.WriteAllLines(outputFileName, entities.Select(s => s.EntityLine));
             }
+            else if (sortedChunkFiles != null && sortedChunkFiles.Count > 0)
+            {
+                // If the data cannot be sorted in memory, need to use an external sorting algorithm here
+                // and write the output file (merge) as part of that process
+                Merger.MergeSortedFiles(sortedChunkFiles, outputFileName ?? string.Empty);
+            }
         }
-        
+
+        /// <summary>
+        /// Enumerates alphanumeric entities parsed from a sequence of input lines.
+        /// </summary>
+        /// <remarks>Lines that do not match the expected format or contain invalid numeric values are
+        /// skipped. The method disposes the enumerator for the input sequence when enumeration is complete.</remarks>
+        /// <param name="lines">The collection of strings to parse, where each line is expected to contain a numeric value and an
+        /// alphanumeric identifier separated by a delimiter.</param>
+        /// <returns>An enumerable collection of <see cref="AlphanumericEntity"/> objects parsed from the input lines. Only lines
+        /// that can be successfully parsed into an entity are included.</returns>
+        public static IEnumerable<AlphanumericEntity> EnumerateEntities(IEnumerable<string> lines)
+        {
+            IEnumerator<string> enumerator = lines.GetEnumerator();
+
+            try
+            {
+                string[]? parts;
+                while (enumerator.MoveNext())
+                {
+                    parts = GetSplit(enumerator.Current, AlphanumericEntity.Delimiter).ToArray();
+
+                    if (parts != null && parts.Length == 2 && int.TryParse(parts[0].Trim(), out int numericPart))
+                    {
+                        yield return new AlphanumericEntity(parts[1].Trim(), numericPart);
+                    }
+                }
+            }
+            finally
+            {
+                enumerator.Dispose();
+            }
+        }
+
         /// <summary>
         /// Releases all resources used by the current instance.
         /// </summary>
@@ -83,6 +147,10 @@
         {
             entities?.GetEnumerator().Dispose();
             entities = null;
+
+            sortedChunkFiles?.ForEach(f => File.Delete(f));
+            sortedChunkFiles?.Clear();
+            sortedChunkFiles = null;
         }
 
         /// <summary>
@@ -119,38 +187,6 @@
             if (i < l) // Has remainder?
             {
                 yield return s.Substring(i, l - i); // Return remaining trail
-            }
-        }
-
-        /// <summary>
-        /// Enumerates alphanumeric entities parsed from a sequence of input lines.
-        /// </summary>
-        /// <remarks>Lines that do not contain exactly two parts separated by the delimiter, or whose
-        /// first part cannot be parsed as an integer, are ignored.</remarks>
-        /// <param name="lines">The collection of strings to parse, where each line is expected to contain a numeric value and an
-        /// alphanumeric identifier separated by the specified delimiter.</param>
-        /// <returns>An enumerable collection of <see cref="AlphanumericEntity"/> objects parsed from the input lines. Only lines
-        /// that can be successfully parsed into an alphanumeric entity are included.</returns>
-        private static IEnumerable<AlphanumericEntity> EnumerateEntities(IEnumerable<string> lines)
-        {
-            IEnumerator<string> enumerator = lines.GetEnumerator();
-
-            try
-            {
-                string[]? parts;
-                while (enumerator.MoveNext())
-                {
-                    parts = GetSplit(enumerator.Current, AlphanumericEntity.Delimiter).ToArray();
-
-                    if (parts != null && parts.Length == 2 && int.TryParse(parts[0].Trim(), out int numericPart))
-                    {
-                        yield return new AlphanumericEntity(parts[1].Trim(), numericPart);
-                    }
-                }
-            }
-            finally
-            {
-                enumerator.Dispose();
             }
         }
     }

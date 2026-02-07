@@ -32,7 +32,6 @@
         /// will be empty if the input file contains no non-empty lines.</returns>
         public static List<string> CreateSortedChunks(string inputFile)
         {
-            
             var tempFiles = new List<string>();
             long maxBytes = CHUNK_SIZE_MB * CHUNK_SIZE_MULTIPLIER * CHUNK_SIZE_MULTIPLIER;
 
@@ -59,10 +58,15 @@
                         }
                     }
 
-                    lines.Sort(StringComparer.Ordinal);
+                    IEnumerable<AlphanumericEntity>? entities = AlphanumericSorterHelper.EnumerateEntities(lines);
+                    var sortedEntities = entities.ToArray().Order();
+
+                    entities.GetEnumerator().Dispose();
+                    entities = null;
+                    entities = sortedEntities;
 
                     tempFile = Path.GetTempFileName();
-                    File.WriteAllLines(tempFile, lines);
+                    File.WriteAllLines(tempFile, entities.Select(s => s.EntityLine));
                     tempFiles.Add(tempFile);
                 }
             }

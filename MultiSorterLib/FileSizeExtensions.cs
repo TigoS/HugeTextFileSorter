@@ -43,7 +43,7 @@
             Avg = 0,
             Max = 1
         }
-        
+
         /// <summary>
         /// Represents the multiplier used for binary calculations, equal to 1,024.
         /// </summary>
@@ -66,7 +66,7 @@
             MetricPrefixes metricBenchmark = MetricPrefixes.None)
         {
             string suffix = showBytes ? $" ({fileSize.GetFileSizeInBytes(metricBenchmark):##,###} B)" : string.Empty;
-            
+
             while (fileSize * 2 > BinaryMultiplier)
             {
                 metricBenchmark++;
@@ -87,9 +87,25 @@
         /// <param name="metricBenchmark">The metric prefix that indicates the unit of the file size value (for example, kilobytes, megabytes, etc.).
         /// Use MetricPrefixes.None to indicate bytes.</param>
         /// <returns>The file size in bytes as a 64-bit integer.</returns>
-        public static long GetFileSizeInBytes(this double fileSize, MetricPrefixes metricBenchmark = MetricPrefixes.None)
+        public static ulong GetFileSizeInBytes(this double fileSize, MetricPrefixes metricBenchmark = MetricPrefixes.None)
         {
-            return (long)(fileSize * Math.Pow(BinaryMultiplier, (int)metricBenchmark - 1));
+            return (ulong)(fileSize * Math.Pow(BinaryMultiplier, (int)metricBenchmark - 1));
+        }
+
+        /// <summary>
+        /// Converts the specified file size, in bytes, to a value expressed in the given metric unit.
+        /// </summary>
+        /// <remarks>Use this method to obtain a file size in units such as kilobytes, megabytes, or
+        /// gigabytes, based on the metric prefix provided. The conversion uses binary multiples (e.g., 1024 for
+        /// kilobyte).</remarks>
+        /// <param name="fileSize">The file size in bytes to convert.</param>
+        /// <param name="metricBenchmark">The metric unit to which the file size should be converted. Specify a value from the <see
+        /// cref="MetricPrefixes"/> enumeration. If <see cref="MetricPrefixes.None"/> is provided, the result is in
+        /// bytes.</param>
+        /// <returns>A double representing the file size in the specified metric unit.</returns>
+        public static double GetFileSizeInUnits(this ulong fileSize, MetricPrefixes metricBenchmark = MetricPrefixes.None)
+        {
+            return fileSize / Math.Pow(BinaryMultiplier, (int)metricBenchmark - 1);
         }
     }
 }
