@@ -24,7 +24,7 @@ namespace AlphanumericSorterBenchmark
         /// </summary>
         private static readonly FileSizeExtensions.MetricPrefixes MetricPrefix = FileSizeExtensions.MetricPrefixes.Mega;
 
-        private readonly long inputFileSize;
+        private readonly ulong inputFileSize;
         private readonly string inputFileName;
 
         private string outputFileName = string.Empty;

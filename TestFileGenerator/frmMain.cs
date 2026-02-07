@@ -64,7 +64,7 @@ namespace TestFileGenerator
             {
                 UpdateControls(true);
 
-                long fileSize = ((double)nudFileSize.Value).GetFileSizeInBytes(MetricPrefixes.Mega);
+                ulong fileSize = ((double)nudFileSize.Value).GetFileSizeInBytes(MetricPrefixes.Mega);
                 int maxNumber = (int)nudMaxNumber.Value;
                 int maxWordsCount = (int)nudMaxWordsCount.Value;
                 int maxWordLength = (int)nudMaxWordLength.Value;

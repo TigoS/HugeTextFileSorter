@@ -40,7 +40,7 @@ namespace TestFileGenerator
         /// <returns>The number of lines written to the generated file, or -1 if the file could not be created.</returns>
         public static long GenerateTestFile(
             string fileName,
-            long fileSize,
+            ulong fileSize,
             int maxNumber = int.MaxValue,
             int maxWordsCount = 150,
             int maxWordLength = 20,
@@ -71,7 +71,7 @@ namespace TestFileGenerator
                 }
             }
 
-            while (fileInfo.Length < fileSize - ushort.MaxValue)
+            while (fileInfo.Length < (long)(fileSize - ushort.MaxValue))
             {
                 if (cts.IsCancellationRequested)
                 {
