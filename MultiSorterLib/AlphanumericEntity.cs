@@ -1,13 +1,10 @@
 ﻿namespace MultiSorterLib
 {
     /// <summary>
-    /// Represents an entity composed of a string and numeric component, supporting comparison and equality operations
-    /// based on both parts.
+    /// Represents an entity composed of a string and numeric component, supporting comparison and equality operations based on both parts.
     /// </summary>
     /// <remarks>AlphanumericEntity instances are typically used to model identifiers or keys that combine a
-    /// textual prefix with a numeric value, such as hierarchical codes or composite labels. Instances are immutable and
-    /// can be compared or used as dictionary keys. Comparison is performed first on the string part using ordinal
-    /// comparison, then on the numeric part if the string parts are equal.</remarks>
+    /// textual prefix with a numeric value, such as hierarchical codes or composite labels. Instances are immutable and can be compared or used as dictionary keys. Comparison is performed first on the string part using ordinal comparison, then on the numeric part if the string parts are equal.</remarks>
     public class AlphanumericEntity : IComparable<AlphanumericEntity>, IEquatable<AlphanumericEntity>
     {
         /// <summary>
@@ -18,9 +15,7 @@
         /// <summary>
         /// Represents the composite format string used to construct a line with two leading elements and a value.
         /// </summary>
-        /// <remarks>This pattern is intended for use with string formatting methods such as
-        /// string.Format, where the placeholders correspond to specific values to be inserted. The first and second
-        /// placeholders typically represent prefix elements, and the third represents the main value.</remarks>
+        /// <remarks>This pattern is intended for use with string formatting methods such as string.Format, where the placeholders correspond to specific values to be inserted. The first and second placeholders typically represent prefix elements, and the third represents the main value.</remarks>
         public const string LinePattern = "{0}{1} {2}";
         
         /// <summary>
@@ -50,15 +45,11 @@
         public string EntityLine => string.Format(LinePattern, NumericPart, Delimiter, StringPart);
         
         /// <summary>
-        /// Compares the current AlphanumericEntity with another AlphanumericEntity and returns an integer that
-        /// indicates their relative order.
+        /// Compares the current AlphanumericEntity with another AlphanumericEntity and returns an integer that indicates their relative order.
         /// </summary>
-        /// <remarks>Comparison is performed first on the string part using ordinal comparison, and then
-        /// on the numeric part if the string parts are equal. If <paramref name="other"/> is null, the current instance
-        /// is considered greater.</remarks>
+        /// <remarks>Comparison is performed first on the string part using ordinal comparison, and then on the numeric part if the string parts are equal. If <paramref name="other"/> is null, the current instance is considered greater.</remarks>
         /// <param name="other">The AlphanumericEntity to compare with the current instance. Can be null.</param>
-        /// <returns>A value less than zero if the current instance precedes <paramref name="other"/> in the sort order; zero if
-        /// they are equal; or a value greater than zero if the current instance follows <paramref name="other"/>.</returns>
+        /// <returns>A value less than zero if the current instance precedes <paramref name="other"/> in the sort order; zero if they are equal; or a value greater than zero if the current instance follows <paramref name="other"/>.</returns>
         public int CompareTo(AlphanumericEntity? other)
         {
             if (other is null)
@@ -75,8 +66,7 @@
         /// Determines whether the current instance is equal to the specified <see cref="AlphanumericEntity"/>.
         /// </summary>
         /// <param name="other">The <see cref="AlphanumericEntity"/> to compare with the current instance. Can be <see langword="null"/>.</param>
-        /// <returns><see langword="true"/> if the current instance and <paramref name="other"/> have the same numeric and string
-        /// parts; otherwise, <see langword="false"/>.</returns>
+        /// <returns><see langword="true"/> if the current instance and <paramref name="other"/> have the same numeric and string parts; otherwise, <see langword="false"/>.</returns>
         public bool Equals(AlphanumericEntity? other)
         {
             return other is not null &&

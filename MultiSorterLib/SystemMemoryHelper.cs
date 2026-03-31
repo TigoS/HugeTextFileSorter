@@ -34,8 +34,7 @@
         /// statistics.
         /// </summary>
         /// <remarks>This method is a P/Invoke wrapper for the Windows API function GlobalMemoryStatusEx.
-        /// It provides detailed memory information for the system. If the method returns false, the contents of
-        /// lpBuffer are undefined. Callers should check the return value before using the data in lpBuffer.</remarks>
+        /// It provides detailed memory information for the system. If the method returns false, the contents of lpBuffer are undefined. Callers should check the return value before using the data in lpBuffer.</remarks>
         /// <param name="lpBuffer">A reference to a MEMORYSTATUSEX structure that receives the memory status information. The structure must be
         /// initialized with its dwLength member set to the size of MEMORYSTATUSEX before calling this method.</param>
         /// <returns>true if the function succeeds; otherwise, false.</returns>
