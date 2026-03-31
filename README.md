@@ -34,7 +34,11 @@ A **.NET 10** solution for generating, sorting, and merging large alphanumeric t
 - [Testing](#testing)
   - [Test Coverage by Project](#test-coverage-by-project)
   - [Test Categories](#test-categories)
+  - [Test Coverage Percentage](#test-coverage-percentage)
 - [Benchmarks](#benchmarks)
+  - [Environment](#environment)
+  - [Results (100 MB test file)](#results-100-mb-test-file)
+  - [Key Takeaways](#key-takeaways)
 - [License](#license)
 
 ## Overview
@@ -300,6 +304,33 @@ dotnet test
 | **Stress** | Large-scale correctness and performance | 100K entity sorts, 50K-line file sort, concurrent sorter instances |
 | **Integration** | End-to-end pipeline verification | External sort → merge → verify sorted output |
 
+### Test Coverage Percentage
+
+Coverage collected with [coverlet](https://github.com/coverlet-coverage/coverlet) via `dotnet test --collect:"XPlat Code Coverage"`.
+
+#### MultiSorterLib (core library) — 94.4% line / 81.9% branch overall
+
+| Class | Line Coverage | Branch Coverage | Complexity |
+|---|---|---|---|
+| `AlphanumericEntity` | **100%** | **100%** | 13 |
+| `AlphanumericSorterHelper` | 80.8% | 57.1% | 28 |
+| ↳ `EnumerateEntities` (iterator) | **100%** | **100%** | 9 |
+| ↳ `GetSplit` (iterator) | **100%** | **100%** | 8 |
+| `ExternalSorter` | **100%** | 91.7% | 12 |
+| `FileSizeExtensions` | **100%** | **100%** | 10 |
+| `Merger` | **100%** | 88.9% | 18 |
+| `SystemMemoryHelper` | 80.0% | 50.0% | 4 |
+| | | |
+| **Overall** | **94.4%** (203/215 lines) | **81.9%** (77/94 branches) | |
+
+#### TestFileGenerator — RandomFileGenerator
+
+| Class | Line Coverage | Branch Coverage |
+|---|---|---|
+| `RandomFileGenerator` | 77.6% | 73.5% |
+
+> **Note:** `frmMain` (Windows Forms UI) and `Program` classes are excluded from meaningful coverage metrics as they contain platform-specific UI code not suitable for automated unit testing.
+
 ## Benchmarks
 
 Run benchmarks with:
@@ -309,6 +340,33 @@ dotnet run --project AlphanumericSorterBenchmark -c Release
 ```
 
 The benchmark suite uses **BenchmarkDotNet** with `MemoryDiagnoser` to measure allocation and throughput across the full generate → load → sort → save pipeline on a 100 MB test file.
+
+### Environment
+
+```
+BenchmarkDotNet v0.13.5, Windows 11 (10.0.26200.7623)
+13th Gen Intel Core i9-13900H, 1 CPU, 20 logical and 14 physical cores
+.NET SDK 10.0.102
+  [Host]     : .NET 10.0.2 (10.0.225.61305), X64 RyuJIT AVX2
+  DefaultJob : .NET 10.0.2 (10.0.225.61305), X64 RyuJIT AVX2
+```
+
+### Results (100 MB test file)
+
+| Method | Mean | Error | StdDev | Gen0 | Gen1 | Gen2 | Allocated |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `GenerateTestFile` | 6,303.5 ms | 123.0 ms | 151.1 ms | 8,537,000 | 966,000 | 1,000 | ~100.0 GB |
+| `InitializeSorter` | 0.042 ms | 0.001 ms | 0.001 ms | 0.24 | 0.18 | — | 3.58 KB |
+| `Sort` | 63.4 ms | 1.2 ms | 1.9 ms | — | — | — | 775.35 KB |
+| `SaveToFile` | 147.1 ms | 2.7 ms | 4.1 ms | 16,667 | 333 | — | 201.33 MB |
+
+### Key Takeaways
+
+- **File generation** dominates total time — ~6.3 seconds for 100 MB, accounting for ~97% of the full pipeline duration due to heavy string allocation (~100 GB GC pressure across generations)
+- **Initialization** is near-instant at **42 μs** — file handle setup and lazy entity enumeration create minimal overhead (3.58 KB)
+- **Sorting** completes in **63 ms** for the full 100 MB parsed entity set, allocating only 775 KB (the sorted array copy)
+- **Saving** takes **147 ms** with ~201 MB allocated for buffered file I/O writes
+- **Sort + Save** together take **~210 ms** — the actual sort-and-persist pipeline is extremely fast relative to file generation
 
 ## License
 
