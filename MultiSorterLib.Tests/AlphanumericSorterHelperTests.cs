@@ -23,6 +23,7 @@ namespace TestFileGenerator.Tests
         }
 
         [Test]
+        [Category("Integration")]
         public void SortAndSaveOutputFile_WritesSortedEntities_WithExpectedSuffix()
         {
             string dir = Path.GetTempPath();

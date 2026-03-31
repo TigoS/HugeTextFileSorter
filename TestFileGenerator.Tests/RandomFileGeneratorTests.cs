@@ -105,6 +105,7 @@ namespace TestFileGenerator.Tests
         }
 
         [Test]
+        [Category("Integration")]
         public void GenerateTestFile_CreatesFileAndReturnsPositiveLineCount()
         {
             string file = Path.Combine(Path.GetTempPath(), $"rfg_test_{Guid.NewGuid():N}.txt");
@@ -133,6 +134,7 @@ namespace TestFileGenerator.Tests
         }
 
         [Test]
+        [Category("Integration")]
         public void GenerateTestFile_ThrowsOperationCanceledException_WhenTokenCanceledBeforeStart()
         {
             string file = Path.Combine(Path.GetTempPath(), $"rfg_cancel_test_{Guid.NewGuid():N}.txt");

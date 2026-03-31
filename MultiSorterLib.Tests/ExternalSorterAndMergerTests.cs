@@ -3,6 +3,7 @@ using MultiSorterLib;
 namespace TestFileGenerator.Tests
 {
     [TestFixture]
+    [Category("Integration")]
     public class ExternalSorterAndMergerTests
     {
         [Test]

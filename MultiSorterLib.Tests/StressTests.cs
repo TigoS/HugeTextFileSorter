@@ -31,6 +31,7 @@ namespace MultiSorterLib.Tests
         }
 
         [Test]
+        [Category("Integration")]
         public void Stress_AlphanumericSorterHelper_LargeFile_SortsCorrectly()
         {
             const int lineCount = 50_000;
@@ -76,6 +77,7 @@ namespace MultiSorterLib.Tests
         }
 
         [Test]
+        [Category("Integration")]
         public void Stress_ExternalSortAndMerge_EndToEnd()
         {
             const int lineCount = 20_000;
@@ -138,6 +140,7 @@ namespace MultiSorterLib.Tests
         }
 
         [Test]
+        [Category("Integration")]
         public void Stress_ConcurrentSorterInstances_NoInterference()
         {
             const int instanceCount = 10;
