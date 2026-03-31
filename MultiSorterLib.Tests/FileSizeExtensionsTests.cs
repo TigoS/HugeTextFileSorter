@@ -83,5 +83,29 @@ namespace TestFileGenerator.Tests
             Assert.That(FileSizeExtensions.GetFileSizeInUnits(0UL, FileSizeExtensions.MetricPrefixes.None), Is.EqualTo(0d));
             Assert.That(FileSizeExtensions.GetFileSizeInUnits(0UL, FileSizeExtensions.MetricPrefixes.Kilo), Is.EqualTo(0d));
         }
+
+        [Test]
+        public void FormatFileSize_LargeValue_ShowsGBRange()
+        {
+            double sizeBytes = 2d * 1024 * 1024 * 1024;
+            string formatted = FileSizeExtensions.FormatFileSize(sizeBytes);
+            Assert.That(formatted, Does.Contain("GB"));
+        }
+
+        [Test]
+        public void GetFileSizeInBytes_And_GetFileSizeInUnits_RoundTrip()
+        {
+            double originalSize = 3.5;
+            var prefix = FileSizeExtensions.MetricPrefixes.Mega;
+            ulong bytes = FileSizeExtensions.GetFileSizeInBytes(originalSize, prefix);
+            double roundTrip = FileSizeExtensions.GetFileSizeInUnits(bytes, prefix);
+            Assert.That(roundTrip, Is.EqualTo(originalSize).Within(0.01));
+        }
+
+        [Test]
+        public void GetFileSizeInBytes_None_ReturnsSameValue()
+        {
+            Assert.That(FileSizeExtensions.GetFileSizeInBytes(500d, FileSizeExtensions.MetricPrefixes.None), Is.EqualTo(500UL));
+        }
     }
 }

@@ -88,5 +88,126 @@ namespace TestFileGenerator.Tests
             Assert.That(res[1].NumericPart, Is.EqualTo(2));
             Assert.That(res[2].NumericPart, Is.EqualTo(3));
         }
+
+        [Test]
+        public void Constructor_ValidFile_SetsOutputFileNameWithSortedSuffix()
+        {
+            string dir = Path.GetTempPath();
+            string input = Path.Combine(dir, $"test_{Guid.NewGuid():N}.txt");
+            File.WriteAllText(input, "1. A");
+            try
+            {
+                using var helper = new AlphanumericSorterHelper(input);
+                string expected = Path.Combine(dir,
+                    Path.GetFileNameWithoutExtension(input) + "_Sorted" + Path.GetExtension(input));
+                Assert.That(helper.OutputFileName, Is.EqualTo(expected));
+            }
+            finally
+            {
+                File.Delete(input);
+            }
+        }
+
+        [Test]
+        public void Sort_EmptyFile_DoesNotThrow()
+        {
+            string input = Path.Combine(Path.GetTempPath(), $"empty_{Guid.NewGuid():N}.txt");
+            File.WriteAllText(input, string.Empty);
+            try
+            {
+                using var helper = new AlphanumericSorterHelper(input);
+                Assert.DoesNotThrow(() => helper.Sort());
+            }
+            finally
+            {
+                File.Delete(input);
+            }
+        }
+
+        [Test]
+        public void SaveOutputFile_NoValidEntities_DoesNotCreateFile()
+        {
+            string input = Path.Combine(Path.GetTempPath(), $"invalid_{Guid.NewGuid():N}.txt");
+            File.WriteAllLines(input, ["no delimiter here", "also invalid"]);
+            try
+            {
+                using var helper = new AlphanumericSorterHelper(input);
+                helper.Sort();
+                helper.SaveOutputFile();
+                Assert.That(File.Exists(helper.OutputFileName), Is.False);
+            }
+            finally
+            {
+                File.Delete(input);
+            }
+        }
+
+        [Test]
+        public void Dispose_CalledMultipleTimes_DoesNotThrow()
+        {
+            string input = Path.Combine(Path.GetTempPath(), $"dispose_{Guid.NewGuid():N}.txt");
+            File.WriteAllText(input, "1. Test");
+            try
+            {
+                var helper = new AlphanumericSorterHelper(input);
+                Assert.DoesNotThrow(() =>
+                {
+                    helper.Dispose();
+                    helper.Dispose();
+                });
+            }
+            finally
+            {
+                File.Delete(input);
+            }
+        }
+
+        [Test]
+        public void GetSplit_NoDelimiter_ReturnsOriginalString()
+        {
+            var mi = GetPrivate("GetSplit", typeof(string), typeof(char));
+            var res = ((IEnumerable<string>)mi.Invoke(null, ["NoDelimiterHere", '.'])!).ToArray();
+            Assert.That(res, Is.EqualTo(new[] { "NoDelimiterHere" }).AsCollection);
+        }
+
+        [Test]
+        public void GetSplit_SingleCharDelimiter_ReturnsEmpty()
+        {
+            var mi = GetPrivate("GetSplit", typeof(string), typeof(char));
+            var res = ((IEnumerable<string>)mi.Invoke(null, [".", '.'])!).ToArray();
+            Assert.That(res, Is.Empty);
+        }
+
+        [Test]
+        public void GetSplit_LeadingAndTrailingDelimiters_SkipsThem()
+        {
+            var mi = GetPrivate("GetSplit", typeof(string), typeof(char));
+            var res = ((IEnumerable<string>)mi.Invoke(null, [".A.B.", '.'])!).ToArray();
+            Assert.That(res, Is.EqualTo(new[] { "A", "B" }).AsCollection);
+        }
+
+        [Test]
+        public void EnumerateEntities_EmptyInput_ReturnsEmpty()
+        {
+            var entities = AlphanumericSorterHelper.EnumerateEntities(Array.Empty<string>()).ToArray();
+            Assert.That(entities, Is.Empty);
+        }
+
+        [Test]
+        public void EnumerateEntities_AllInvalidLines_ReturnsEmpty()
+        {
+            var lines = new[] { "nope", "bad line", "123", ". missing number", "abc. def" };
+            var entities = AlphanumericSorterHelper.EnumerateEntities(lines).ToArray();
+            Assert.That(entities, Is.Empty);
+        }
+
+        [Test]
+        public void EnumerateEntities_LineWithMultipleDelimiters_IsSkipped()
+        {
+            // "1. Alpha. Beta" -> GetSplit yields 3 parts -> Length != 2 -> skipped
+            var lines = new[] { "1. Alpha. Beta" };
+            var entities = AlphanumericSorterHelper.EnumerateEntities(lines).ToArray();
+            Assert.That(entities, Is.Empty);
+        }
     }
 }
