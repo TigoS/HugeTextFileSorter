@@ -5,12 +5,10 @@ using TestFileGenerator;
 namespace AlphanumericSorterBenchmark
 {
     /// <summary>
-    /// Provides benchmark methods for generating, sorting, and saving large alphanumeric test files to evaluate sorting
-    /// performance.
+    /// Provides benchmark methods for generating, sorting, and saving large alphanumeric test files to evaluate sorting performance.
     /// </summary>
-    /// <remarks>This class is intended for use with benchmarking frameworks such as BenchmarkDotNet. It
-    /// automates the setup, execution, and cleanup of sorting benchmarks, including test file generation and resource
-    /// management. The class is not thread-safe.</remarks>
+    /// <remarks>This class is intended for use with benchmarking frameworks such as BenchmarkDotNet.
+    /// It automates the setup, execution, and cleanup of sorting benchmarks, including test file generation and resource management. The class is not thread-safe.</remarks>
     [MemoryDiagnoser()]
     public class BenchmarkSorter : IDisposable
     {
@@ -32,13 +30,9 @@ namespace AlphanumericSorterBenchmark
         private AlphanumericSorterHelper? sorterHelper;
 
         /// <summary>
-        /// Initializes a new instance of the BenchmarkSorter class and prepares the environment for benchmarking by
-        /// generating a test file and performing an initial sort.
+        /// Initializes a new instance of the BenchmarkSorter class and prepares the environment for benchmarking by generating a test file and performing an initial sort.
         /// </summary>
-        /// <remarks>This constructor creates a temporary storage directory if it does not already exist,
-        /// generates a benchmark test file, and performs an initial sort and output file save to ensure the sorting
-        /// process is functioning correctly before benchmarking begins. The generated files are stored in a common
-        /// application data directory, which may require appropriate permissions.</remarks>
+        /// <remarks>This constructor creates a temporary storage directory if it does not already exist, generates a benchmark test file, and performs an initial sort and output file save to ensure the sorting process is functioning correctly before benchmarking begins. The generated files are stored in a common application data directory, which may require appropriate permissions.</remarks>
         public BenchmarkSorter()
         {
             var storageDirectory = Path.Combine(
@@ -68,9 +62,7 @@ namespace AlphanumericSorterBenchmark
         /// <summary>
         /// Generates a test file with random content using the specified input file name and size.
         /// </summary>
-        /// <remarks>This method is intended for benchmarking purposes and measures the performance of the
-        /// test file generation process. The generated file's characteristics are determined by the values of the
-        /// inputFileName and inputFileSize fields.</remarks>
+        /// <remarks>This method is intended for benchmarking purposes and measures the performance of the test file generation process. The generated file's characteristics are determined by the values of the inputFileName and inputFileSize fields.</remarks>
         [Benchmark]
         public void GenerateTestFile()
         {
@@ -80,9 +72,7 @@ namespace AlphanumericSorterBenchmark
         /// <summary>
         /// Initializes the alphanumeric sorter helper using the current input file, if any lines have been generated.
         /// </summary>
-        /// <remarks>This method prepares the sorter for subsequent operations by creating a new instance
-        /// of the alphanumeric sorter helper when there is data to process. It should be called before performing any
-        /// sorting or output operations that depend on the sorter being initialized.</remarks>
+        /// <remarks>This method prepares the sorter for subsequent operations by creating a new instance of the alphanumeric sorter helper when there is data to process. It should be called before performing any sorting or output operations that depend on the sorter being initialized.</remarks>
         [Benchmark]
         public void InitializeSorter()
         {
@@ -96,8 +86,7 @@ namespace AlphanumericSorterBenchmark
         /// <summary>
         /// Performs a sort operation using the configured sorting helper.
         /// </summary>
-        /// <remarks>This method delegates the sorting logic to the associated sorter helper. The specific
-        /// sorting algorithm and behavior depend on the implementation of the sorter helper in use.</remarks>
+        /// <remarks>This method delegates the sorting logic to the associated sorter helper. The specific sorting algorithm and behavior depend on the implementation of the sorter helper in use.</remarks>
         [Benchmark]
         public void Sort()
         {
@@ -107,8 +96,7 @@ namespace AlphanumericSorterBenchmark
         /// <summary>
         /// Saves the output file generated by the sorter to persistent storage.
         /// </summary>
-        /// <remarks>This method delegates the save operation to the underlying sorter helper. Ensure that
-        /// the sorter has completed processing before calling this method to avoid saving incomplete data.</remarks>
+        /// <remarks>This method delegates the save operation to the underlying sorter helper. Ensure that the sorter has completed processing before calling this method to avoid saving incomplete data.</remarks>
         [Benchmark]
         public void SaveOutputFile()
         {
@@ -118,8 +106,7 @@ namespace AlphanumericSorterBenchmark
         /// <summary>
         /// Releases all resources used by the current instance of the class.
         /// </summary>
-        /// <remarks>Call this method when you are finished using the object to free unmanaged resources
-        /// and perform other cleanup operations. After calling Dispose, the object should not be used.</remarks>
+        /// <remarks>Call this method when you are finished using the object to free unmanaged resources and perform other cleanup operations. After calling Dispose, the object should not be used.</remarks>
         public void Dispose()
         {
             sorterHelper?.Dispose();
