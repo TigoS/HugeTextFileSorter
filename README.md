@@ -70,7 +70,7 @@ HugeTextFileSorter/
 ├── MultiSorterLib/                     # Core sorting library
 │   ├── AlphanumericEntity.cs           # Entity model (IComparable, IEquatable)
 │   ├── AlphanumericSorterHelper.cs     # In-memory file sort orchestrator
-│   ├── ExternalSorter.cs              # Chunk-based external sorting
+│   ├── ExternalSorter.cs               # Chunk-based external sorting
 │   ├── Merger.cs                       # Priority-queue k-way merge
 │   ├── FileSizeExtensions.cs           # File size formatting & conversion
 │   └── SystemMemoryHelper.cs           # Available memory detection (P/Invoke)
@@ -82,7 +82,7 @@ HugeTextFileSorter/
 ├── AlphanumericSorterBenchmark/        # BenchmarkDotNet performance suite
 │   ├── BenchmarkSorter.cs
 │   └── Program.cs
-├── MultiSorterLib.Tests/              # Unit & stress tests for core library
+├── MultiSorterLib.Tests/               # Unit & stress tests for core library
 │   ├── AlphanumericEntityTests.cs      # 34 tests — entity model
 │   ├── AlphanumericSorterHelperTests.cs# 14 tests — sorter helper
 │   ├── ExternalSorterAndMergerTests.cs # 8 tests — external sort + merge
@@ -90,7 +90,7 @@ HugeTextFileSorter/
 │   ├── SystemMemoryHelperTests.cs      # 3 tests — memory detection
 │   ├── StressTests.cs                  # 12 tests — large-scale & concurrent
 │   └── TestSetup.cs                    # Assembly-level test configuration
-└── TestFileGenerator.Tests/           # Unit tests for file generator
+└── TestFileGenerator.Tests/            # Unit tests for file generator
     ├── RandomFileGeneratorTests.cs     # 8 tests — generation logic
     └── TestSetup.cs
 ```
