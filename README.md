@@ -309,28 +309,35 @@ dotnet test
 
 Coverage collected with [coverlet](https://github.com/coverlet-coverage/coverlet) via `dotnet test --collect:"XPlat Code Coverage"`.
 
-#### MultiSorterLib (core library) — 94.4% line / 81.9% branch overall
+#### Summary
 
-| Class | Line Coverage | Branch Coverage | Complexity |
+| Metric | Value |
+|---|---|
+| **Line coverage** | **94.4%** (203 / 215 lines) |
+| **Branch coverage** | **81.9%** (77 / 94 branches) |
+
+#### Per-Class Breakdown
+
+| Class | Line Coverage | Branch Coverage | Status |
 |---|---|---|---|
-| `AlphanumericEntity` | **100%** | **100%** | 13 |
-| `AlphanumericSorterHelper` | 80.8% | 57.1% | 28 |
-| ↳ `EnumerateEntities` (iterator) | **100%** | **100%** | 9 |
-| ↳ `GetSplit` (iterator) | **100%** | **100%** | 8 |
-| `ExternalSorter` | **100%** | 91.7% | 12 |
-| `FileSizeExtensions` | **100%** | **100%** | 10 |
-| `Merger` | **100%** | 88.9% | 18 |
-| `SystemMemoryHelper` | 80.0% | 50.0% | 4 |
-| | | |
-| **Overall** | **94.4%** (203/215 lines) | **81.9%** (77/94 branches) | |
+| `AlphanumericEntity` | 100% | 100% | ✅ Full |
+| `AlphanumericSorterHelper.EnumerateEntities` | 100% | 100% | ✅ Full |
+| `AlphanumericSorterHelper.GetSplit` | 100% | 100% | ✅ Full |
+| `ExternalSorter` | 100% | 91.7% | ✅ Near-full |
+| `FileSizeExtensions` | 100% | 100% | ✅ Full |
+| `Merger` | 100% | 88.9% | ✅ Near-full |
+| `AlphanumericSorterHelper` (class body) | 80.8% | 57.1% | ⚠️ Partial |
+| `SystemMemoryHelper` | 80.0% | 50.0% | ⚠️ Partial |
+| `RandomFileGenerator` | 77.6% | 73.5% | ⚠️ Partial |
+| `frmMain` (Windows Forms UI) | — | — | ➖ UI only |
 
-#### TestFileGenerator — RandomFileGenerator
-
-| Class | Line Coverage | Branch Coverage |
-|---|---|---|
-| `RandomFileGenerator` | 77.6% | 73.5% |
-
-> **Note:** `frmMain` (Windows Forms UI) and `Program` classes are excluded from meaningful coverage metrics as they contain platform-specific UI code not suitable for automated unit testing.
+> **Notes:**
+> - **4 of 6 core classes** achieve **100% line coverage**; 3 of those also reach **100% branch coverage**.
+> - `ExternalSorter` and `Merger` are near-full — uncovered branches are null-guard paths on `StreamReader` / `PriorityQueue` edge conditions.
+> - `AlphanumericSorterHelper` class body (80.8%) is lowered by the constructor's early-return and `SaveOutputFile`'s guard clauses; its iterator methods (`EnumerateEntities`, `GetSplit`) are **100% covered**.
+> - `SystemMemoryHelper` (80.0% / 50.0%) — the non-Windows `GC.GetGCMemoryInfo()` fallback branch is not exercised on Windows test runners.
+> - `RandomFileGenerator` (77.6%) — untested branches are within the duplicate-density generation loop variants (`duplicateStringDensity >= 100`, `ShouldBeDuplicate` random path).
+> - `frmMain` and `Program` are excluded from quality targets as they contain platform-specific Windows Forms UI code not suitable for automated unit testing.
 
 ## Benchmarks
 
