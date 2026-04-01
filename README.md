@@ -5,7 +5,7 @@
 [![C# 14](https://img.shields.io/badge/C%23-14.0-blue)](https://learn.microsoft.com/en-us/dotnet/csharp/)
 [![NUnit](https://img.shields.io/badge/tests-NUnit%204-green)](https://nunit.org/)
 [![BenchmarkDotNet](https://img.shields.io/badge/benchmarks-BenchmarkDotNet-blue)](https://benchmarkdotnet.org/)
-[![Coverage](https://img.shields.io/badge/coverage-94.4%25-brightgreen)]
+[![Coverage](https://img.shields.io/badge/coverage-94.4%25-brightgreen)]()
 
 A **.NET 10** solution for generating, sorting, and merging large alphanumeric text files. Designed for scenarios where files are too large to fit entirely in memory, it employs **external sorting** — splitting files into sorted chunks and merging them via a priority-queue-based k-way merge — to handle multi-gigabyte datasets efficiently.
 
